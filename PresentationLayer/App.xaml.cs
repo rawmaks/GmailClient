@@ -13,5 +13,9 @@ namespace PresentationLayer
     /// </summary>
     public partial class App : Application
     {
+        App()
+        {
+            InitializeComponent();
+        }
     }
 }
