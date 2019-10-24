@@ -1,4 +1,6 @@
-﻿using BusinessLogicLayer.Helpers;
+﻿using BusinessLogicLayer.DataTransferObjects;
+using BusinessLogicLayer.Helpers;
+using BusinessLogicLayer.Interfaces;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
@@ -7,6 +9,7 @@ using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -14,15 +17,37 @@ namespace BusinessLogicLayer.Services
 {
     public class GmailAPIService
     {
-        static string[] Scopes = { GmailService.Scope.GmailReadonly };
-        static string ApplicationName = "Gmail API .NET Quickstart";
+        public static GmailAPIService Instance { get; } = new GmailAPIService();
+
+        private GmailService _service;
 
         public GmailAPIService()
         {
+            _service = GetGmailService();
+        }
+
+        public List<Message> GetMessages(string[] labels = null, string query = null, string userId = "me")
+        {
+            return GetMessages(_service, labels, query, userId);
+        }
+
+        public Message GetMessageByID(string messageId, string userId = "me")
+        {
+            return GetMessageByID(_service, messageId, userId);
+        }
+
+
+
+
+        private static string[] Scopes = { GmailService.Scope.GmailReadonly };
+        private static string ApplicationName = "Gmail API .NET Quickstart";
+
+        private static GmailService GetGmailService()
+        {
             UserCredential credential;
 
-            using (var stream =
-                new FileStream(@"C:\credentials.json", FileMode.Open, FileAccess.Read))
+            // TODO: Path !!!
+            using (var stream = new FileStream(@"C:\credentials.json", FileMode.Open, FileAccess.Read))
             {
                 // The file token.json stores the user's access and refresh tokens, and is created
                 // automatically when the authorization flow completes for the first time.
@@ -42,29 +67,17 @@ namespace BusinessLogicLayer.Services
                 ApplicationName = ApplicationName,
             });
 
-            UsersResource.MessagesResource.ListRequest request = service.Users.Messages.List("me");
-            IList<Message> messages = request.Execute().Messages;
-            if (messages != null && messages.Count > 0)
-            {
-                foreach (var message in messages)
-                {
-                    var m = service.Users.Messages.Get("me", message.Id);
-                    m.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Raw;
-                    var readMessage = m.Execute();
-                    var body = readMessage.Raw;//readMessage.Payload.Parts[0].Body.Data;
-                    if (!string.IsNullOrWhiteSpace(body))
-                    {
-                        //MessageBox.Show(Base64Helper.Decode(body));
-                    }
-                }
-            }
+            return service;
         }
 
-        public static List<Message> ListMessages(GmailService service, String userId, String query)
+        // RefreshTOken
+
+        private static List<Message> GetMessages(GmailService service, string[] labels = null, string query = null, string userId = "me")
         {
             List<Message> result = new List<Message>();
             UsersResource.MessagesResource.ListRequest request = service.Users.Messages.List(userId);
-            request.Q = query;
+            if (labels != null) request.LabelIds = labels;
+            if (!string.IsNullOrWhiteSpace(query)) request.Q = query;
 
             do
             {
@@ -78,12 +91,23 @@ namespace BusinessLogicLayer.Services
                 {
                     Console.WriteLine("An error occurred: " + e.Message);
                 }
-            } while (!String.IsNullOrEmpty(request.PageToken));
+            } while (!string.IsNullOrEmpty(request.PageToken));
 
             return result;
         }
 
+        private static Message GetMessageByID(GmailService service, string messageId, string userId = "me")
+        {
+            try
+            {
+                return service.Users.Messages.Get(userId, messageId).Execute();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occurred: " + e.Message);
+            }
 
-
+            return null;
+        }
     }
 }

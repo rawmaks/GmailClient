@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PresentationLayer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -7,16 +8,12 @@ namespace PresentationLayer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MailView : Window
     {
-
-
-        public MainWindow()
+        public MailView(MailViewModel mailViewModel)
         {
             InitializeComponent();
-
-
-            
+            DataContext = mailViewModel;
         }
 
 

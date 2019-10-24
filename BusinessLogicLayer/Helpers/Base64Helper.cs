@@ -5,14 +5,22 @@ namespace BusinessLogicLayer.Helpers
 {
     public class Base64Helper
     {
-
+        // TODO: Исправить комменты
         public static string Decode(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
-                return "<strong>Message body was not returned from Google</strong>";
+                return "Зачем мне пустая строка?";
 
-            string InputStr = input.Replace("-", "+").Replace("_", "/");
-            return Encoding.UTF8.GetString(Convert.FromBase64String(InputStr));
+            try
+            {
+                string result = input.Replace("-", "+").Replace("_", "/");
+                result = Encoding.UTF8.GetString(Convert.FromBase64String(result));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return $"Не получилось {ex.Message}";
+            }
 
         }
 
