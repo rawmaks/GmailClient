@@ -6,12 +6,24 @@ namespace DataAccessLayer.Entities
 {
     public class Message : BaseEntity
     {
-        public string UserName { get; set; }
-        public string UserEmail { get; set; }
-        public DateTime Date { get; set; }
-        public bool IsResponseSent { get; set; }
         public string Subject { get; set; }
-        public MessageBody BodyFields { get; set; }
-        public string BodyRaw { get; set; }
+        public string Body { get; set; }
+        public string Sender { get; set; }
+        public string SenderName { get; set; }
+        public string SenderEmail { get; set; }
+        public string Recipient { get; set; }
+        public string RecipientName { get; set; }
+        public string RecipientEmail { get; set; }
+        public DateTime Date { get; set; }
+
+        /// <summary>
+        /// Был ли отправлен ответ?
+        /// </summary>
+        public bool IsResponseSent { get; set; }
+
+        /// <summary>
+        /// Тип письма
+        /// </summary>
+        public MessageType MessageType { get; set; }
     }
 }

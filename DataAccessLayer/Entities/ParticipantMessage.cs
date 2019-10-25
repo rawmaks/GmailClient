@@ -4,7 +4,8 @@ using System.Text;
 
 namespace DataAccessLayer.Entities
 {
-    public class MessageBody : BaseEntity
+    public class ParticipantMessage : BaseEntity
     {
+        public Message Message { get; set; }
     }
 }

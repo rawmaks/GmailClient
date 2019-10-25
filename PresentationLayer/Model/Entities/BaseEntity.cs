@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace DataAccessLayer.Entities
+namespace PresentationLayer.Model.Entities
 {
     public class BaseEntity
     {
@@ -12,7 +12,6 @@ namespace DataAccessLayer.Entities
         /// Идентификатор
         /// </summary>
         /// 
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>

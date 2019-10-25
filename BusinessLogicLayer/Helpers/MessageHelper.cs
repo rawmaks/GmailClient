@@ -14,6 +14,9 @@ namespace BusinessLogicLayer.Helpers
 
         public static MessageDTO ConvertToCorrectType(Message message)
         {
+            if (message == null) return null;
+
+
             MessageDTO result = null;
 
 
@@ -22,7 +25,7 @@ namespace BusinessLogicLayer.Helpers
             result.Subject = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "Subject".ToLower())?.Value;
             result.Sender = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "From".ToLower())?.Value;
             result.RecipientEmail = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "To".ToLower())?.Value;
-            result.Date = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "Date".ToLower())?.Value;
+            result.Date = DateTime.Now; //message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "Date".ToLower())?.Value;
 
             if (!string.IsNullOrWhiteSpace(result.Sender) && result.Sender.Contains("<") && result.Sender.Contains(">"))
             {
@@ -31,6 +34,10 @@ namespace BusinessLogicLayer.Helpers
                 result.Sender = result.Sender.Replace("<", "(").Replace(">", ")").Trim();
             }
 
+            // TODO: !!!
+            result.IsResponseSent = false;
+            result.MessageType = new MessageTypeDTO { ID = 1, Name = "dsfg" };
+
             if (message.Payload.Parts != null)
             {
                 foreach (var part in message.Payload.Parts)
@@ -38,14 +45,14 @@ namespace BusinessLogicLayer.Helpers
                     if (part.MimeType == "text/html")
                     {
                         // TODO: Helper
-                        result.BodyRaw = Base64Helper.Decode(part.Body?.Data);
+                        result.Body = Base64Helper.Decode(part.Body?.Data);
                     }
                 }
             }
             else
             {
                 // TODO: Helper
-                result.BodyRaw = Base64Helper.Decode(message?.Payload?.Body?.Data);
+                result.Body = Base64Helper.Decode(message?.Payload?.Body?.Data);
             }
 
             return result;

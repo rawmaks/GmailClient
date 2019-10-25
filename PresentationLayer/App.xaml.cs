@@ -45,6 +45,8 @@ namespace PresentationLayer
         {
             //services.Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)));
 
+            services.AddBusinessLogicLayer(Configuration.GetConnectionString("SQLServerConnection"));
+
             services.AddSingleton<IMailService, GmailDBService>();
             services.AddTransient<MailViewModel>();
             services.AddTransient(typeof(MailView));

@@ -21,13 +21,18 @@ namespace PresentationLayer.ViewModels
         //    IXlsxService xlsxService)
         public MailViewModel(IMailService mailService)
         {
-            IEnumerable<MessageDTO> messageDTOs = mailService.GetMessagesAsync();
+            mailService.GetMessagesAsync();
+            //IEnumerable<MessageDTO> messageDTOs = mailService.GetMessagesAsync();
 
-            IMapper mapper = new MapperConfiguration(cfg => cfg.CreateMap<MessageDTO, Message>()).CreateMapper();
-            List<Message> messages = mapper.Map<IEnumerable<MessageDTO>, List<Message>>(messageDTOs);
+            //IMapper mapper = new MapperConfiguration(cfg => {
+            //    cfg.CreateMap<MessageTypeDTO, MessageType>();
+            //    cfg.CreateMap<MessageDTO, Message>();
+            //}).CreateMapper();
+            //List<Message> messages = mapper.Map<IEnumerable<MessageDTO>, List<Message>>(messageDTOs);
 
-            Messages = new ObservableCollection<Message>(messages);
-            
+
+            //Messages = new ObservableCollection<Message>(messages);
+
         }
 
         public string Title
@@ -40,10 +45,5 @@ namespace PresentationLayer.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
-        //public void OnPropertyChanged([CallerMemberName]string prop = "")
-        //{
-        //    if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        //}
     }
 }

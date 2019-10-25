@@ -19,7 +19,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
+            <!-- Header -> Photo + Email = UserInfo -->
             <Grid Grid.Row="0">
                 
             </Grid>
@@ -48,6 +48,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="5">
+                                <TextBlock FontSize="18" Text="{Binding Path=Sender}"/>
                                 <TextBlock FontSize="18" Text="{Binding Path=Subject}"/>
                             </StackPanel>
                         </DataTemplate>

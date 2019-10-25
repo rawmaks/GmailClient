@@ -4,7 +4,8 @@ using System.Text;
 
 namespace BusinessLogicLayer.DataTransferObjects
 {
-    public class MessageBodyDTO
+    public class ParticipantMessageDTO : BaseEntityDTO
     {
+        public MessageDTO Message { get; set; }
     }
 }

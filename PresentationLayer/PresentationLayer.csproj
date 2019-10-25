@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Infrastructure\Enums\" />
     <Folder Include="Model\Services\" />
   </ItemGroup>
 
