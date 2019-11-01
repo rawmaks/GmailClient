@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="credentials.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="credentials.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

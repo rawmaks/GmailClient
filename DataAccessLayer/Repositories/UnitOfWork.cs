@@ -11,20 +11,21 @@ namespace DataAccessLayer.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        protected readonly MessageContext _dbContext;
+        //protected readonly MessageContext _dbContext;
+        protected readonly DbContextOptions<MessageContext> _options;
 
         protected IRepository<Settings> _settingsRepository;
         protected IMessageRepository<Message> _messageRepository;
         protected IMessageRepository<MessageType> _messageTypeRepository;
-        protected IMessageRepository<ParticipantMessage> _participantMessageRepository;
 
-        public UnitOfWork(string connectionString) // TODO: options?
+        public UnitOfWork(string connectionString)
         {
             var options = new DbContextOptionsBuilder<MessageContext>()
                     .UseSqlServer(connectionString)
                     .Options;
 
-            _dbContext = new MessageContext(options);
+            //_dbContext = new MessageContext(options);
+            _options = options;
         }
 
 
@@ -33,7 +34,7 @@ namespace DataAccessLayer.Repositories
             get
             {
                 if (_settingsRepository == null)
-                    _settingsRepository = new BaseRepository<Settings>(_dbContext);
+                    _settingsRepository = new BaseRepository<Settings>(_options);
                 return _settingsRepository;
             }
         }
@@ -43,7 +44,7 @@ namespace DataAccessLayer.Repositories
             get
             {
                 if (_messageRepository == null)
-                    _messageRepository = new MessageRepository<Message>(_dbContext);
+                    _messageRepository = new MessageRepository<Message>(_options);
                 return _messageRepository;
             }
         }
@@ -53,47 +54,37 @@ namespace DataAccessLayer.Repositories
             get
             {
                 if (_messageTypeRepository == null)
-                    _messageTypeRepository = new MessageRepository<MessageType>(_dbContext);
+                    _messageTypeRepository = new MessageRepository<MessageType>(_options);
                 return _messageTypeRepository;
             }
         }
 
-        public IMessageRepository<ParticipantMessage> ParticipantMessages
-        {
-            get
-            {
-                if (_participantMessageRepository == null)
-                    _participantMessageRepository = new MessageRepository<ParticipantMessage>(_dbContext);
-                return _participantMessageRepository;
-            }
-        }
 
 
 
+        //private bool disposed = false;
 
-        private bool disposed = false;
+        //public virtual void Dispose(bool disposing)
+        //{
+        //    if (!disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            _dbContext.Dispose();
+        //        }
+        //        disposed = true;
+        //    }
+        //}
 
-        public virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    _dbContext.Dispose();
-                }
-                disposed = true;
-            }
-        }
+        //public void Dispose()
+        //{
+        //    Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public async Task SaveAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
+        //public async Task SaveAsync()
+        //{
+        //    await _dbContext.SaveChangesAsync();
+        //}
     }
 }

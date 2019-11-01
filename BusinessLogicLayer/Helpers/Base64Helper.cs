@@ -5,8 +5,11 @@ namespace BusinessLogicLayer.Helpers
 {
     public class Base64Helper
     {
+        // Singleton
+        public static Base64Helper Instance { get; } = new Base64Helper();
+
         // TODO: Исправить комменты
-        public static string Decode(string input)
+        public string Decode(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return "Зачем мне пустая строка?";

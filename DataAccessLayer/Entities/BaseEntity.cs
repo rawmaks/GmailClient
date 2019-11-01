@@ -11,14 +11,13 @@ namespace DataAccessLayer.Entities
         /// <summary>
         /// Идентификатор
         /// </summary>
-        /// 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>
         /// Дата создания
         /// </summary>
-        /// 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreateDate { get; set; }
     }
 }

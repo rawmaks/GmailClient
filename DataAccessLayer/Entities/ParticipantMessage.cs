@@ -6,6 +6,8 @@ namespace DataAccessLayer.Entities
 {
     public class ParticipantMessage : BaseEntity
     {
+        public int MessageID { get; set; }
         public Message Message { get; set; }
+        // TODO: ...
     }
 }

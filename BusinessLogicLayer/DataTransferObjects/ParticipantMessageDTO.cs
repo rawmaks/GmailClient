@@ -6,6 +6,8 @@ namespace BusinessLogicLayer.DataTransferObjects
 {
     public class ParticipantMessageDTO : BaseEntityDTO
     {
+        public int MessageID { get; set; }
         public MessageDTO Message { get; set; }
+        // TODO: ...
     }
 }

@@ -8,6 +8,13 @@ namespace PresentationLayer.Model.Entities
 {
     public class Message : BaseEntity, INotifyPropertyChanged
     {
+        private string messageID;
+        public string MessageID
+    {
+            get { return messageID; }
+            set { messageID = value; OnPropertyChanged("MessageID"); }
+        }
+
         private string subject;
         public string Subject
         {
@@ -36,8 +43,8 @@ namespace PresentationLayer.Model.Entities
             set { senderEmail = value; OnPropertyChanged("SenderEmail"); }
         }
 
-        private DateTime date;
-        public DateTime Date
+        private DateTime? date;
+        public DateTime? Date
         {
             get { return date; }
             set { date = value; OnPropertyChanged("Date"); }
@@ -56,6 +63,13 @@ namespace PresentationLayer.Model.Entities
         /// <summary>
         /// Тип письма
         /// </summary>
+        private int messageTypeID;
+        public int MessageTypeID
+        {
+            get { return messageTypeID; }
+            set { messageTypeID = value; OnPropertyChanged("MessageTypeID"); }
+        }
+
         private MessageType messageType;
         public MessageType MessageType
         {

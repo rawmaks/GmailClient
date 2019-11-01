@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
@@ -26,6 +27,7 @@ namespace BusinessLogicLayer.Services
             _service = GetGmailService();
         }
 
+
         public List<Message> GetMessages(string[] labels = null, string query = null, string userId = "me")
         {
             return GetMessages(_service, labels, query, userId);
@@ -36,43 +38,50 @@ namespace BusinessLogicLayer.Services
             return GetMessageByID(_service, messageId, userId);
         }
 
+        public async Task<List<Message>> GetMessagesAsync(string[] labels = null, string query = null, string userId = "me")
+        {
+            return await GetMessagesAsync(_service, labels, query, userId);
+        }
+
+        public async Task<Message> GetMessageByIDAsync(string messageId, string userId = "me")
+        {
+            return await GetMessageByIDAsync(_service, messageId, userId);
+        }
 
 
 
-        private static string[] Scopes = { GmailService.Scope.GmailReadonly };
-        private static string ApplicationName = "Gmail API .NET Quickstart";
 
-        private static GmailService GetGmailService()
+        private string[] scopes = { GmailService.Scope.GmailReadonly, GmailService.Scope.GmailSend };
+        private string applicationName = "RawmaksGmailClient";
+        private string credentialsPath = "credentials.json";
+        private string tokenPath = "token.json";
+
+        private GmailService GetGmailService()
         {
             UserCredential credential;
 
             // TODO: Path !!!
-            using (var stream = new FileStream(@"C:\credentials.json", FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(credentialsPath, FileMode.Open, FileAccess.Read))
             {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                string credPath = "token.json";
+                //ClientSecrets secrets = new ClientSecrets();
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
+                    scopes,
                     "user",
                     CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
+                    new FileDataStore(tokenPath, true)).Result;
             }
 
-            // Create Gmail API service.
             var service = new GmailService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
+                ApplicationName = applicationName,
             });
 
             return service;
         }
 
-        // RefreshTOken
-
-        private static List<Message> GetMessages(GmailService service, string[] labels = null, string query = null, string userId = "me")
+        private List<Message> GetMessages(GmailService service, string[] labels = null, string query = null, string userId = "me")
         {
             List<Message> result = new List<Message>();
             UsersResource.MessagesResource.ListRequest request = service.Users.Messages.List(userId);
@@ -96,11 +105,49 @@ namespace BusinessLogicLayer.Services
             return result;
         }
 
-        private static Message GetMessageByID(GmailService service, string messageId, string userId = "me")
+        private Message GetMessageByID(GmailService service, string messageId, string userId = "me")
         {
             try
             {
                 return service.Users.Messages.Get(userId, messageId).Execute();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occurred: " + e.Message);
+            }
+
+            return null;
+        }
+
+        private async Task<List<Message>> GetMessagesAsync(GmailService service, string[] labels = null, string query = null, string userId = "me")
+        {
+            List<Message> result = new List<Message>();
+            UsersResource.MessagesResource.ListRequest request = service.Users.Messages.List(userId);
+            if (labels != null) request.LabelIds = labels;
+            if (!string.IsNullOrWhiteSpace(query)) request.Q = query;
+
+            do
+            {
+                try
+                {
+                    ListMessagesResponse response = await request.ExecuteAsync();
+                    result.AddRange(response.Messages);
+                    request.PageToken = response.NextPageToken;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("An error occurred: " + e.Message);
+                }
+            } while (!string.IsNullOrEmpty(request.PageToken));
+
+            return result;
+        }
+
+        private async Task<Message> GetMessageByIDAsync(GmailService service, string messageId, string userId = "me")
+        {
+            try
+            {
+                return await service.Users.Messages.Get(userId, messageId).ExecuteAsync();
             }
             catch (Exception e)
             {

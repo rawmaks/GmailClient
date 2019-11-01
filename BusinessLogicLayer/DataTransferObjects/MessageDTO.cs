@@ -6,6 +6,7 @@ namespace BusinessLogicLayer.DataTransferObjects
 {
     public class MessageDTO : BaseEntityDTO
     {
+        public string MessageID { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public string Sender { get; set; }
@@ -14,16 +15,14 @@ namespace BusinessLogicLayer.DataTransferObjects
         public string Recipient { get; set; }
         public string RecipientName { get; set; }
         public string RecipientEmail { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         /// <summary>
         /// Был ли отправлен ответ?
         /// </summary>
         public bool IsResponseSent { get; set; }
-
-        /// <summary>
-        /// Тип письма
-        /// </summary>
+        public int MessageTypeID { get; set; }
         public MessageTypeDTO MessageType { get; set; }
+        public ParticipantMessageDTO Participant { get; set; }
     }
 }

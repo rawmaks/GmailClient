@@ -9,13 +9,11 @@ namespace BusinessLogicLayer.DataTransferObjects
         /// <summary>
         /// Идентификатор
         /// </summary>
-        /// 
         public int ID { get; set; }
 
         /// <summary>
         /// Дата создания
         /// </summary>
-        /// 
         public DateTime CreateDate { get; set; }
     }
 }

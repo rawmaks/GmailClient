@@ -9,5 +9,6 @@ namespace DataAccessLayer.Entities
         public int ParentID { get; set; }
         public string Name { get; set; }
         public string Text { get; set; }
+        public List<Message> Messages { get; set; }
     }
 }

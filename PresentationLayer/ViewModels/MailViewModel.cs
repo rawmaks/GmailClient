@@ -9,38 +9,57 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PresentationLayer.ViewModels
 {
     public class MailViewModel : INotifyPropertyChanged
     {
-        //public MailViewModel(
-        //    ISettingsService settingsService,
-        //    IMailService mailService,
-        //    IDocxService docxService,
-        //    IXlsxService xlsxService)
+        // Dependencies
+        private readonly IMailService _mailService;
+
         public MailViewModel(IMailService mailService)
         {
-            mailService.GetMessagesAsync();
-            //IEnumerable<MessageDTO> messageDTOs = mailService.GetMessagesAsync();
+            _mailService = mailService;
 
-            //IMapper mapper = new MapperConfiguration(cfg => {
-            //    cfg.CreateMap<MessageTypeDTO, MessageType>();
-            //    cfg.CreateMap<MessageDTO, Message>();
-            //}).CreateMapper();
-            //List<Message> messages = mapper.Map<IEnumerable<MessageDTO>, List<Message>>(messageDTOs);
-
-
-            //Messages = new ObservableCollection<Message>(messages);
-
+            Task.Run(() => {
+                Getcheg();
+            });
         }
 
+        public void Getcheg() // async Task
+        {
+            //await _mailService.InitializeMessagesAsync();
+            //_mailService.InitializeMessages();
+            _mailService.InitializeMessagesAsync().Wait();
+
+            IEnumerable<MessageDTO> messageDTOs = _mailService.GetMessages(); // await
+
+            IMapper mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<MessageTypeDTO, MessageType>();
+                cfg.CreateMap<MessageDTO, Message>();
+            }).CreateMapper();
+            List<Message> messages = mapper.Map<IEnumerable<MessageDTO>, List<Message>>(messageDTOs);
+
+
+            Messages = new ObservableCollection<Message>(messages);
+            Title = "";
+        }
+
+        private string title;
         public string Title
         {
-            // TODO: Нормальный заголовок
             get { return $"Входящие ({(Messages?.Count > 0 ? Messages.Count : default)})"; }
+            set { title = value; OnPropertyChanged("Title"); }
         }
-        public ObservableCollection<Message> Messages { get; set; }
+
+        private ObservableCollection<Message> messages;
+        public ObservableCollection<Message> Messages
+        {
+            get { return messages; }
+            set { messages = value; OnPropertyChanged("Messages"); }
+        }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
