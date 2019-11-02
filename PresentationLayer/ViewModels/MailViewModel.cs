@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DataTransferObjects;
 using BusinessLogicLayer.Interfaces;
-
+using PresentationLayer.Model;
 using PresentationLayer.Model.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PresentationLayer.ViewModels
 {
@@ -22,18 +23,28 @@ namespace PresentationLayer.ViewModels
         {
             _mailService = mailService;
 
-            Task.Run(() => {
-                Getcheg();
-            });
+            Task.Run(async () => await Load());
+
+            //Task.Run(() => { });
         }
 
-        public void Getcheg() // async Task
-        {
-            //await _mailService.InitializeMessagesAsync();
-            //_mailService.InitializeMessages();
-            _mailService.InitializeMessagesAsync().Wait();
 
-            IEnumerable<MessageDTO> messageDTOs = _mailService.GetMessages(); // await
+
+        public async Task Load()
+        {
+            await RefreshList();
+
+            await Task.Run(async () => {
+                await _mailService.InitializeMessagesAsync();
+                await RefreshList();
+            });
+
+            // TODO: Запустить проверку на отправленные ответы
+        }
+
+        public async Task RefreshList()
+        {
+            IEnumerable<MessageDTO> messageDTOs = await _mailService.GetMessagesAsync();
 
             IMapper mapper = new MapperConfiguration(cfg =>
             {
@@ -46,6 +57,11 @@ namespace PresentationLayer.ViewModels
             Messages = new ObservableCollection<Message>(messages);
             Title = "";
         }
+
+
+
+
+
 
         private string title;
         public string Title
@@ -60,6 +76,64 @@ namespace PresentationLayer.ViewModels
             get { return messages; }
             set { messages = value; OnPropertyChanged("Messages"); }
         }
+
+
+        private RelayCommand close;
+        public RelayCommand Close
+        {
+            get
+            {
+                return close ??
+                  (close = new RelayCommand(obj =>
+                  {
+                      Window mailView = obj as MailView;
+                      mailView.Close();
+                  }));
+            }
+        }
+
+        private RelayCommand minimize;
+        public RelayCommand Minimize
+        {
+            get
+            {
+                return minimize ??
+                  (minimize = new RelayCommand(obj =>
+                  {
+                      Window mailView = obj as MailView;
+                      mailView.WindowState = WindowState.Minimized;
+                  }));
+            }
+        }
+
+        private RelayCommand dragMove;
+        public RelayCommand DragMove
+        {
+            get
+            {
+                return dragMove ??
+                  (dragMove = new RelayCommand(obj =>
+                  {
+                      Window mailView = obj as MailView;
+                      mailView.DragMove();
+                  }));
+            }
+        }
+
+        private RelayCommand openSettings;
+        public RelayCommand OpenSettings
+        {
+            get
+            {
+                return openSettings ??
+                  (openSettings = new RelayCommand(obj =>
+                  {
+                      
+                  }));
+            }
+        }
+
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;

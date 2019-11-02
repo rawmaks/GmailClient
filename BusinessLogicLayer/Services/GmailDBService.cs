@@ -31,32 +31,6 @@ namespace BusinessLogicLayer.Services
         }
 
 
-        public void InitializeMessages()
-        {
-            // Получение списка ВХОДЯЩИХ сообщений из Gmail API
-            List<GmailData.Message> inboxMessages = _apiService.GetMessages(new string[] { "INBOX" });
-
-            if (inboxMessages?.Count > 0)
-            {
-                foreach (GmailData.Message message in inboxMessages)
-                {
-                    if (!(_database.Messages.Any(m => m.MessageID == message.Id)))
-                    {
-                        // TODO: !!!
-                        MessageHelper messageHelper = new MessageHelper();
-
-                        MessageDTO messageDTO = messageHelper.ConvertToCorrectType(_apiService.GetMessageByID(message.Id));
-
-                        if (messageDTO != null)
-                        {
-                            _database.Messages.Create(GetMessageDTOToMessageMapper().Map<MessageDTO, DALEntities.Message>(messageDTO));
-                        }
-                    }
-                }
-
-            }
-        }
-
         // TODO: Return result
         public async Task InitializeMessagesAsync()
         {
@@ -87,11 +61,6 @@ namespace BusinessLogicLayer.Services
         public async Task<IEnumerable<MessageDTO>> GetMessagesAsync()
         {
             return GetMessageToMessageDTOMapper().Map<IEnumerable<DALEntities.Message>, List<MessageDTO>>(await _database.Messages.GetListAsync());
-        }
-
-        public IEnumerable<MessageDTO> GetMessages()
-        {
-            return GetMessageToMessageDTOMapper().Map<IEnumerable<DALEntities.Message>, List<MessageDTO>>(_database.Messages.GetList());
         }
 
 

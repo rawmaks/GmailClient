@@ -1,41 +1,97 @@
 ﻿<Window x:Class="PresentationLayer.MailView"
+        x:Name="MailWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PresentationLayer"
-        mc:Ignorable="d" Height="640" Width="480">
+        mc:Ignorable="d"
+        Style="{StaticResource WindowStyle}">
 
     <Grid>
 
-        <Grid>
+        <Grid.RowDefinitions>
+            <!-- Header -->
+            <RowDefinition Height="40"/>
+            <!-- Body -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <Grid.RowDefinitions>
-                <!-- Header -->
-                <RowDefinition Height="40"/>
-                <!-- Mails -->
-                <RowDefinition Height="*"/>
-                <!-- Bottom Buttons -->
-                <RowDefinition Height="40"/>
-            </Grid.RowDefinitions>
+        <!-- Header -->
+        <Grid Grid.Row="0" Background="Transparent" MouseLeftButtonDown="DragMoveWindow">
 
-            <!-- Header -> Photo + Email = UserInfo -->
-            <Grid Grid.Row="0">
+            <!-- User -> Photo + Email -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 
+            </StackPanel>
+
+            <!-- Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                <!-- Settings Button -->
+                <Button x:Name="SettingsButton" Style="{StaticResource ButtonWithIconStyle}" 
+                        Tag="{StaticResource SettingsIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                        ToolTip="{StaticResource SettingsString}" Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                        Command="{Binding OpenSettings}"/>
+
+                <!-- Minimize Button -->
+                <Button x:Name="MinimizeButton" Style="{StaticResource ButtonWithIconStyle}" 
+                        Tag="{StaticResource MinimizeIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                        ToolTip="{StaticResource MinimizeString}" Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                        Command="{Binding Minimize}" CommandParameter="{Binding ElementName=MailWindow}"/>
+
+                <!-- Close Button -->
+                <Button x:Name="CloseButton" Style="{StaticResource ButtonWithIconStyle}" 
+                        Tag="{StaticResource CloseIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                        ToolTip="{StaticResource CloseString}" Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                        Command="{Binding Close}" CommandParameter="{Binding ElementName=MailWindow}"/>
+
+            </StackPanel>
+
+            <!-- Event for dragging -->
+            <!--<Grid.InputBindings>
+                <MouseBinding MouseAction="LeftClick" Command="{Binding DragMove}" CommandParameter="{Binding ElementName=MailWindow}"/>
+            </Grid.InputBindings>-->
+            <x:Code>
+                <![CDATA[            
+                    private void DragMoveWindow(object sender, System.Windows.Input.MouseButtonEventArgs e)
+                    {
+                        DragMove();
+                    }
+                ]]>
+            </x:Code>
+
+        </Grid>
+
+        <!-- Body -->
+        <Grid Grid.Row="1">
+
+            <Grid.ColumnDefinitions>
+                <!-- Filters -->
+                <ColumnDefinition Width="1*" MinWidth="100"/>
+                <!-- List -->
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Filters -->
+            <Grid Grid.Column="0">
+
+                <ListBox>
+
+                </ListBox>
+
             </Grid>
 
-            <!-- Mails -->
-            <Grid Grid.Row="1">
+            <!-- List -->
+            <Grid Grid.Column="1">
 
                 <Grid.RowDefinitions>
                     <!-- Control Panel -->
-                    <RowDefinition Height="20"/>
-                    <!-- Filter Panel -->
-                    <RowDefinition Height="20"/>
-                    <!-- Title -->
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="40"/>
                     <!-- Progress Bar -->
                     <RowDefinition Height="4"/>
+                    <!-- Title -->
+                    <RowDefinition Height="60"/>
                     <!-- List -->
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -44,7 +100,7 @@
                 <TextBlock Grid.Row="2" Text="{Binding Title}"/>
 
                 <!-- List -->
-                <ListBox Grid.Row="4" ItemsSource="{Binding Messages}">
+                <ListBox Grid.Row="3" ItemsSource="{Binding Messages}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="5">
@@ -57,21 +113,25 @@
 
             </Grid>
 
-            <!-- Bottom Buttons -->
-            <Grid Grid.Row="2">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="0" Name="ExportToWordButton" Content="W"/>
-                <Button Grid.Column="1" Name="ExportToExcelButton" Content="E"/>
-
-            </Grid>
-
         </Grid>
 
+        <!-- FABs -->
+        <StackPanel Grid.Row="1" Style="{StaticResource FABPanelStyle}">
+
+            <!-- Word Button -->
+            <Button x:Name="ExportToWordButton" Style="{StaticResource CircleButtonWithIconStyle}" Effect="{StaticResource ShadowEffect}" 
+                    Tag="{StaticResource WordIcon}" Background="{StaticResource WordColor}" BorderBrush="{StaticResource WordDarkColor}" Foreground="{StaticResource ButtonForegroundColor}"
+                    Margin="{StaticResource FABMargin}" Width="{StaticResource FABSize}" Height="{StaticResource FABSize}"
+                    ToolTip="{StaticResource ExportToWordString}"/>
+            
+            <!-- Excel Button -->
+            <Button x:Name="ExportToExcelButton" Style="{StaticResource CircleButtonWithIconStyle}" Effect="{StaticResource ShadowEffect}"
+                    Tag="{StaticResource ExcelIcon}" Background="{StaticResource ExcelColor}" BorderBrush="{StaticResource ExcelDarkColor}" Foreground="{StaticResource ButtonForegroundColor}"
+                    Margin="{StaticResource FABMargin}" Width="{StaticResource FABSize}" Height="{StaticResource FABSize}"
+                    ToolTip="{StaticResource ExportToExcelString}"/>
+
+        </StackPanel>
+
     </Grid>
-    
+
 </Window>

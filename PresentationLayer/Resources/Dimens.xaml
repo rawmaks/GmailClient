@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:clr="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:local="clr-namespace:PresentationLayer.Resources">
+
+    <!-- Margins -->
+    <Thickness x:Key="FABMargin" Left="0" Right="30" Top="0" Bottom="30"/>
+
+    <!-- Sizes -->
+    <clr:Double x:Key="FABSize">60</clr:Double>
+    <clr:Double x:Key="HeaderButtonSize">40</clr:Double>
+
+    <!-- GridLengths -->
+    <GridLength x:Key="SizeLargeCell">340</GridLength>
+
+</ResourceDictionary>

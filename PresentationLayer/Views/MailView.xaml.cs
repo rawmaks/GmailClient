@@ -15,7 +15,5 @@ namespace PresentationLayer
             InitializeComponent();
             DataContext = mailViewModel;
         }
-
-
     }
 }
