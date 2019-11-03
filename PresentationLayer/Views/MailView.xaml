@@ -18,35 +18,48 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Background="Transparent" MouseLeftButtonDown="DragMoveWindow">
+        <Border Grid.Row="0" Background="Transparent" BorderThickness="{StaticResource BottomBorder}" BorderBrush="{StaticResource BorderColor}" 
+                MouseLeftButtonDown="DragMoveWindow">
 
-            <!-- User -> Photo + Email -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                
-            </StackPanel>
+            <Grid>
 
-            <!-- Buttons -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <!-- User -> Photo + Email -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="UserButton" Style="{StaticResource ButtonWithTextAndIconStyle}" 
+                        Tag="{StaticResource UserIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                        Content="{Binding Title}" ToolTip="{StaticResource MinimizeString}" Height="{StaticResource HeaderButtonSize}"/>
+                </StackPanel>
 
-                <!-- Settings Button -->
-                <Button x:Name="SettingsButton" Style="{StaticResource ButtonWithIconStyle}" 
-                        Tag="{StaticResource SettingsIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
-                        ToolTip="{StaticResource SettingsString}" Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
-                        Command="{Binding OpenSettings}"/>
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-                <!-- Minimize Button -->
-                <Button x:Name="MinimizeButton" Style="{StaticResource ButtonWithIconStyle}" 
-                        Tag="{StaticResource MinimizeIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
-                        ToolTip="{StaticResource MinimizeString}" Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
-                        Command="{Binding Minimize}" CommandParameter="{Binding ElementName=MailWindow}"/>
+                    <!-- Refresh Button -->
+                    <Button Style="{StaticResource ButtonWithIconStyle}" Tag="{StaticResource RefreshIcon}" ToolTip="{StaticResource RefreshString}" 
+                            Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                            Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                            Command="{Binding Refresh}"/>
 
-                <!-- Close Button -->
-                <Button x:Name="CloseButton" Style="{StaticResource ButtonWithIconStyle}" 
-                        Tag="{StaticResource CloseIcon}" Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
-                        ToolTip="{StaticResource CloseString}" Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
-                        Command="{Binding Close}" CommandParameter="{Binding ElementName=MailWindow}"/>
+                    <!-- Settings Button -->
+                    <Button Style="{StaticResource ButtonWithIconStyle}" Tag="{StaticResource SettingsIcon}" ToolTip="{StaticResource SettingsString}"
+                            Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                            Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                            Command="{Binding OpenSettings}"/>
 
-            </StackPanel>
+                    <!-- Minimize Button -->
+                    <Button Style="{StaticResource ButtonWithIconStyle}" Tag="{StaticResource MinimizeIcon}" ToolTip="{StaticResource MinimizeString}"
+                            Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                            Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                            Command="{Binding Minimize}" CommandParameter="{Binding ElementName=MailWindow}"/>
+
+                    <!-- Close Button -->
+                    <Button Style="{StaticResource ButtonWithIconStyle}" Tag="{StaticResource CloseIcon}" ToolTip="{StaticResource CloseString}"
+                            Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                            Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                            Command="{Binding Close}" CommandParameter="{Binding ElementName=MailWindow}"/>
+
+                </StackPanel>
+
+            </Grid>
 
             <!-- Event for dragging -->
             <!--<Grid.InputBindings>
@@ -61,7 +74,7 @@
                 ]]>
             </x:Code>
 
-        </Grid>
+        </Border>
 
         <!-- Body -->
         <Grid Grid.Row="1">
@@ -70,13 +83,13 @@
                 <!-- Filters -->
                 <ColumnDefinition Width="1*" MinWidth="100"/>
                 <!-- List -->
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Filters -->
             <Grid Grid.Column="0">
 
-                <ListBox>
+                <ListBox BorderThickness="0">
 
                 </ListBox>
 
@@ -86,29 +99,57 @@
             <Grid Grid.Column="1">
 
                 <Grid.RowDefinitions>
-                    <!-- Control Panel -->
-                    <RowDefinition Height="40"/>
-                    <!-- Progress Bar -->
-                    <RowDefinition Height="4"/>
                     <!-- Title -->
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Control Panel -->
+                    <RowDefinition Height="Auto"/>
                     <!-- List -->
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <!-- Title -->
-                <TextBlock Grid.Row="2" Text="{Binding Title}"/>
+                <TextBlock Grid.Row="0" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"
+                           FontSize="18" FontWeight="Bold"/>
+
+                <!-- Control Panel -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+
+                    <!-- Refresh Button -->
+                    <Button Style="{StaticResource ButtonWithIconStyle}" Tag="{StaticResource RefreshIcon}" ToolTip="{StaticResource RefreshString}"
+                            Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
+                            Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
+                            Command="{Binding Refresh}"/>
+
+                </StackPanel>
 
                 <!-- List -->
-                <ListBox Grid.Row="3" ItemsSource="{Binding Messages}">
+                <ListBox Grid.Row="2" ItemsSource="{Binding Messages}" ItemContainerStyle="{StaticResource MailListItemStyle}"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0">
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="5">
-                                <TextBlock FontSize="18" Text="{Binding Path=Sender}"/>
-                                <TextBlock FontSize="18" Text="{Binding Path=Subject}"/>
-                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" MinWidth="{Binding Path=StatusID}" Style="{StaticResource MailListButtonStyle}"
+                                        Background="{StaticResource WordColor}" Foreground="{StaticResource ButtonForegroundColor}"
+                                        Margin="{StaticResource MailItemButonMargin}" Width="{StaticResource MailItemButonSize}" Height="{StaticResource MailItemButonSize}"
+                                        ToolTip="{StaticResource ExportToWordString}" Command="{Binding DataContext.SendMail, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}" CommandParameter="{Binding Path=ID}"/>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+
+                                    <TextBlock FontSize="18" Text="{Binding Path=Sender}"/>
+                                    <TextBlock FontSize="14" Text="{Binding Path=Subject}"/>
+
+                                </StackPanel>
+
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+
                 </ListBox>
 
             </Grid>
@@ -119,13 +160,13 @@
         <StackPanel Grid.Row="1" Style="{StaticResource FABPanelStyle}">
 
             <!-- Word Button -->
-            <Button x:Name="ExportToWordButton" Style="{StaticResource CircleButtonWithIconStyle}" Effect="{StaticResource ShadowEffect}" 
+            <Button Style="{StaticResource CircleButtonWithIconStyle}" Effect="{StaticResource ShadowEffect}" 
                     Tag="{StaticResource WordIcon}" Background="{StaticResource WordColor}" BorderBrush="{StaticResource WordDarkColor}" Foreground="{StaticResource ButtonForegroundColor}"
                     Margin="{StaticResource FABMargin}" Width="{StaticResource FABSize}" Height="{StaticResource FABSize}"
                     ToolTip="{StaticResource ExportToWordString}"/>
             
             <!-- Excel Button -->
-            <Button x:Name="ExportToExcelButton" Style="{StaticResource CircleButtonWithIconStyle}" Effect="{StaticResource ShadowEffect}"
+            <Button Style="{StaticResource CircleButtonWithIconStyle}" Effect="{StaticResource ShadowEffect}"
                     Tag="{StaticResource ExcelIcon}" Background="{StaticResource ExcelColor}" BorderBrush="{StaticResource ExcelDarkColor}" Foreground="{StaticResource ButtonForegroundColor}"
                     Margin="{StaticResource FABMargin}" Width="{StaticResource FABSize}" Height="{StaticResource FABSize}"
                     ToolTip="{StaticResource ExportToExcelString}"/>

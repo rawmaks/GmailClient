@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,65 +61,25 @@ namespace PresentationLayer.ViewModels
 
 
 
-
-
-
         private string title;
         public string Title
         {
             get { return $"Входящие ({(Messages?.Count > 0 ? Messages.Count : default)})"; }
-            set { title = value; OnPropertyChanged("Title"); }
+            set { title = value; OnPropertyChanged(nameof(Title)); }
         }
 
         private ObservableCollection<Message> messages;
         public ObservableCollection<Message> Messages
         {
             get { return messages; }
-            set { messages = value; OnPropertyChanged("Messages"); }
+            set { messages = value; OnPropertyChanged(nameof(Messages)); }
         }
 
 
-        private RelayCommand close;
-        public RelayCommand Close
-        {
-            get
-            {
-                return close ??
-                  (close = new RelayCommand(obj =>
-                  {
-                      Window mailView = obj as MailView;
-                      mailView.Close();
-                  }));
-            }
-        }
+        public RelayCommand Close => new RelayCommand(obj => (obj as MailView).Close());
+        public RelayCommand Minimize => new RelayCommand(obj => (obj as MailView).WindowState = WindowState.Minimized);
+        public RelayCommand DragMove => new RelayCommand(obj => (obj as MailView).DragMove());
 
-        private RelayCommand minimize;
-        public RelayCommand Minimize
-        {
-            get
-            {
-                return minimize ??
-                  (minimize = new RelayCommand(obj =>
-                  {
-                      Window mailView = obj as MailView;
-                      mailView.WindowState = WindowState.Minimized;
-                  }));
-            }
-        }
-
-        private RelayCommand dragMove;
-        public RelayCommand DragMove
-        {
-            get
-            {
-                return dragMove ??
-                  (dragMove = new RelayCommand(obj =>
-                  {
-                      Window mailView = obj as MailView;
-                      mailView.DragMove();
-                  }));
-            }
-        }
 
         private RelayCommand openSettings;
         public RelayCommand OpenSettings
@@ -132,6 +93,25 @@ namespace PresentationLayer.ViewModels
                   }));
             }
         }
+
+        private RelayCommand refresh;
+        public RelayCommand Refresh
+        {
+            get
+            {
+                return refresh ??
+                  (refresh = new RelayCommand(obj =>
+                  {
+
+                  }));
+            }
+        }
+
+        public RelayCommand SendMail => new RelayCommand(obj =>
+        {
+            int id = (int)obj;
+            Messages.FirstOrDefault(x => x.ID == id).StatusID = 2;
+        });
 
 
 

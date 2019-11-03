@@ -12,52 +12,49 @@ namespace PresentationLayer.Model.Entities
         public string MessageID
     {
             get { return messageID; }
-            set { messageID = value; OnPropertyChanged("MessageID"); }
+            set { messageID = value; OnPropertyChanged(nameof(MessageID)); }
         }
 
         private string subject;
         public string Subject
         {
             get { return subject; }
-            set { subject = value; OnPropertyChanged("Subject"); }
+            set { subject = value; OnPropertyChanged(nameof(Subject)); }
         }
 
         private string sender;
         public string Sender
         {
             get { return sender; }
-            set { sender = value; OnPropertyChanged("Sender"); }
+            set { sender = value; OnPropertyChanged(nameof(Sender)); }
         }
 
         private string senderName;
         public string SenderName
         {
             get { return senderName; }
-            set { senderName = value; OnPropertyChanged("SenderName"); }
+            set { senderName = value; OnPropertyChanged(nameof(SenderName)); }
         }
 
         private string senderEmail;
         public string SenderEmail
         {
             get { return senderEmail; }
-            set { senderEmail = value; OnPropertyChanged("SenderEmail"); }
+            set { senderEmail = value; OnPropertyChanged(nameof(SenderEmail)); }
         }
 
         private DateTime? date;
         public DateTime? Date
         {
             get { return date; }
-            set { date = value; OnPropertyChanged("Date"); }
+            set { date = value; OnPropertyChanged(nameof(Date)); }
         }
 
-        /// <summary>
-        /// Был ли отправлен ответ?
-        /// </summary>
-        private bool isResponseSent;
-        public bool IsResponseSent
+        private int statusID;
+        public int StatusID
         {
-            get { return isResponseSent; }
-            set { isResponseSent = value; OnPropertyChanged("IsResponseSent"); }
+            get { return statusID; }
+            set { statusID = value; OnPropertyChanged(nameof(StatusID)); }
         }
 
         /// <summary>
@@ -67,14 +64,7 @@ namespace PresentationLayer.Model.Entities
         public int MessageTypeID
         {
             get { return messageTypeID; }
-            set { messageTypeID = value; OnPropertyChanged("MessageTypeID"); }
-        }
-
-        private MessageType messageType;
-        public MessageType MessageType
-        {
-            get { return messageType; }
-            set { messageType = value; OnPropertyChanged("MessageType"); }
+            set { messageTypeID = value; OnPropertyChanged(nameof(MessageTypeID)); }
         }
 
 

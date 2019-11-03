@@ -7,10 +7,13 @@
     <SolidColorBrush x:Key="PrimaryColor" Color="#00BCD4"/>
     <SolidColorBrush x:Key="PrimaryDarkColor" Color="#00BCD4"/>
     <SolidColorBrush x:Key="ButtonForegroundColor" Color="White"/>
+    <SolidColorBrush x:Key="BorderColor" Color="LightGray"/>
 
     <SolidColorBrush x:Key="TransparentButtonBackgroundColor" Color="Transparent"/>
     <SolidColorBrush x:Key="TransparentButtonBackgroundDarkColor" Color="LightGray"/>
     <SolidColorBrush x:Key="TransparentButtonForegroundColor" Color="Gray"/>
+
+    <SolidColorBrush x:Key="MailItemButtonColor" Color="Gray"/>
 
     <SolidColorBrush x:Key="WordColor" Color="#295391"/>
     <SolidColorBrush x:Key="WordDarkColor" Color="#295391"/>

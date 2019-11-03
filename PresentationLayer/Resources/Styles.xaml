@@ -10,6 +10,15 @@
         <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome CaptionHeight="0"
+                    CornerRadius="2"
+                    GlassFrameThickness="0"
+                    NonClientFrameEdges="None"
+                    ResizeBorderThickness="3"/>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="FABPanelStyle" TargetType="StackPanel">
@@ -47,6 +56,35 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ButtonWithTextAndIconStyle" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkColor}"/>
+        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundColor}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Border" Tag="{TemplateBinding Tag}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                <Canvas Width="24" Height="24" Margin="14">
+                                    <Path Data="{Binding ElementName=Border, Path=Tag}" Fill="{TemplateBinding Foreground}"/>
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{Binding ElementName=Border, Path=BorderBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="CircleButtonWithIconStyle" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
         <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkColor}"/>
@@ -73,6 +111,97 @@
                             <Setter TargetName="Ellipse" Property="Fill" Value="{Binding ElementName=Border, Path=BorderBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- Styles for MailList -->
+
+    <Style x:Key="MailListItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        <Setter Property="BorderBrush" Value="LightGray"/>
+        <!--<EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>-->
+        <Setter Property="Template">
+            <Setter.Value>
+
+                <ControlTemplate TargetType="ListBoxItem">
+
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#c8e4e3"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFE9F4F4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- TODO: Переделать это нечто -->
+    <Style x:Key="MailListButtonStyle" TargetType="Button">
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <Border x:Name="Border" Tag="{TemplateBinding Content}" Background="Transparent" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                        <Grid>
+                            <Ellipse x:Name="Ellipse" Fill="{TemplateBinding Background}"/>
+                            <Viewbox Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                <Canvas Width="24" Height="24" Margin="14">
+
+                                    <Path MinWidth="{TemplateBinding MinWidth}">
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Data" Value="M13 17H17V14L22 18.5L17 23V20H13V17M20 4H4A2 2 0 0 0 2 6V18A2 2 0 0 0 4 20H11.35A5.8 5.8 0 0 1 11 18A6 6 0 0 1 22 14.69V6A2 2 0 0 0 20 4M20 8L12 13L4 8V6L12 11L20 6Z"/>
+                                                <Setter Property="Fill" Value="White"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="MinWidth" Value="1">
+                                                        <Setter Property="Data" Value="M13 17H17V14L22 18.5L17 23V20H13V17M20 4H4A2 2 0 0 0 2 6V18A2 2 0 0 0 4 20H11.35A5.8 5.8 0 0 1 11 18A6 6 0 0 1 22 14.69V6A2 2 0 0 0 20 4M20 8L12 13L4 8V6L12 11L20 6Z"/>
+                                                        <Setter Property="Fill" Value="White"/>
+                                                    </Trigger>
+                                                    <Trigger Property="MinWidth" Value="2">
+                                                        <Setter Property="Data" Value="M21,13.34C20.37,13.12 19.7,13 19,13A6,6 0 0,0 13,19C13,19.34 13.03,19.67 13.08,20H3A2,2 0 0,1 1,18V6C1,4.89 1.89,4 3,4H19A2,2 0 0,1 21,6V13.34M23.5,17L18.5,22L15,18.5L16.5,17L18.5,19L22,15.5L23.5,17M3,6V8L11,13L19,8V6L11,11L3,6Z"/>
+                                                        <Setter Property="Fill" Value="Gray"/>
+                                                    </Trigger>
+                                                    <Trigger Property="MinWidth" Value="3">
+                                                        <Setter Property="Data" Value="M16,9V7L10,11L4,7V9L10,13L16,9M16,5A2,2 0 0,1 18,7V16A2,2 0 0,1 16,18H4C2.89,18 2,17.1 2,16V7A2,2 0 0,1 4,5H16M20,12V7H22V12H20M20,16V14H22V16H20Z"/>
+                                                        <Setter Property="Fill" Value="White"/>
+                                                    </Trigger>
+                                                    <Trigger Property="MinWidth" Value="4">
+                                                        <Setter Property="Data" Value="M13 17H17V14L22 18.5L17 23V20H13V17M20 4H4A2 2 0 0 0 2 6V18A2 2 0 0 0 4 20H11.35A5.8 5.8 0 0 1 11 18A6 6 0 0 1 22 14.69V6A2 2 0 0 0 20 4M20 8L12 13L4 8V6L12 11L20 6Z"/>
+                                                        <Setter Property="Fill" Value="White"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
+                                    
+                                </Canvas>
+                            </Viewbox>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="MinWidth" Value="2">
+                            <Setter TargetName="Ellipse" Property="Fill" Value="LightGray"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                    
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

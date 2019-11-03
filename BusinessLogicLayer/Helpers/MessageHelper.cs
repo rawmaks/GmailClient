@@ -66,7 +66,7 @@ namespace BusinessLogicLayer.Helpers
 
                 /// OTHER FIELDS
                 result.MessageID = message.Id;
-                result.IsResponseSent = false;
+                result.StatusID = 1;
                 result.MessageTypeID = GetMessageType(result.Body);
 
                 // TODO: New Participant, Потом присвоить или ему мессИД или его мессу полю партисипант

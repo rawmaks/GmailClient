@@ -16,11 +16,8 @@ namespace DataAccessLayer.Entities
         public string RecipientName { get; set; }
         public string RecipientEmail { get; set; }
         public DateTime? Date { get; set; }
-
-        /// <summary>
-        /// Был ли отправлен ответ?
-        /// </summary>
-        public bool IsResponseSent { get; set; }
+        public int StatusID { get; set; }
+        public MessageStatus Status { get; set; }
         public int MessageTypeID { get; set; }
         public MessageType MessageType { get; set; }
         public ParticipantMessage Participant { get; set; }
