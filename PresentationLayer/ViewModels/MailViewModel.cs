@@ -19,16 +19,15 @@ namespace PresentationLayer.ViewModels
     {
         // Dependencies
         private readonly IMailService _mailService;
+        private readonly Mappers _mappers;
 
         public MailViewModel(IMailService mailService)
         {
             _mailService = mailService;
+            _mappers = Mappers.Instance;
 
-            Task.Run(async () => await Load());
-
-            //Task.Run(() => { });
+            Task.Run(async () => await Load()); //Task.Run(() => { });
         }
-
 
 
         public async Task Load()
@@ -36,7 +35,7 @@ namespace PresentationLayer.ViewModels
             await RefreshList();
 
             await Task.Run(async () => {
-                await _mailService.InitializeMessagesAsync();
+                await _mailService.InitializeAsync();
                 await RefreshList();
             });
 
@@ -45,21 +44,28 @@ namespace PresentationLayer.ViewModels
 
         public async Task RefreshList()
         {
-            IEnumerable<MessageDTO> messageDTOs = await _mailService.GetMessagesAsync();
-
-            IMapper mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<MessageTypeDTO, MessageType>();
-                cfg.CreateMap<MessageDTO, Message>();
-            }).CreateMapper();
-            List<Message> messages = mapper.Map<IEnumerable<MessageDTO>, List<Message>>(messageDTOs);
-
-
-            Messages = new ObservableCollection<Message>(messages);
+            Messages = new ObservableCollection<Message>(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
             Title = "";
         }
 
 
+        public RelayCommand Close => new RelayCommand(obj => (obj as MailView).Close());
+        public RelayCommand Minimize => new RelayCommand(obj => (obj as MailView).WindowState = WindowState.Minimized);
+        public RelayCommand DragMove => new RelayCommand(obj => (obj as MailView).DragMove());
+        public RelayCommand OpenSettings => new RelayCommand(obj => (obj as MailView).Close());
+        public RelayCommand Refresh => new RelayCommand(obj => Task.Run(async () => await RefreshList()));
+        public RelayCommand SendMail => new RelayCommand(obj =>
+        {
+            int id = (int)obj;
+            Message message = Messages.FirstOrDefault(x => x.ID == id);
+            if (message != null && message?.StatusID != 2)
+            {
+                message.StatusID = 2;
+            }
+        });
+
+
+        public bool IsBeingRefreshed { get; set; } // TODO: ???
 
         private string title;
         public string Title
@@ -74,45 +80,6 @@ namespace PresentationLayer.ViewModels
             get { return messages; }
             set { messages = value; OnPropertyChanged(nameof(Messages)); }
         }
-
-
-        public RelayCommand Close => new RelayCommand(obj => (obj as MailView).Close());
-        public RelayCommand Minimize => new RelayCommand(obj => (obj as MailView).WindowState = WindowState.Minimized);
-        public RelayCommand DragMove => new RelayCommand(obj => (obj as MailView).DragMove());
-
-
-        private RelayCommand openSettings;
-        public RelayCommand OpenSettings
-        {
-            get
-            {
-                return openSettings ??
-                  (openSettings = new RelayCommand(obj =>
-                  {
-                      
-                  }));
-            }
-        }
-
-        private RelayCommand refresh;
-        public RelayCommand Refresh
-        {
-            get
-            {
-                return refresh ??
-                  (refresh = new RelayCommand(obj =>
-                  {
-
-                  }));
-            }
-        }
-
-        public RelayCommand SendMail => new RelayCommand(obj =>
-        {
-            int id = (int)obj;
-            Messages.FirstOrDefault(x => x.ID == id).StatusID = 2;
-        });
-
 
 
 

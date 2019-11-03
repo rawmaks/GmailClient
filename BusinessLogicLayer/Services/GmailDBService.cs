@@ -32,7 +32,7 @@ namespace BusinessLogicLayer.Services
 
 
         // TODO: Return result
-        public async Task InitializeMessagesAsync()
+        public async Task InitializeAsync()
         {
             // Получение списка ВХОДЯЩИХ сообщений из Gmail API
             List<GmailData.Message> inboxMessages = await _apiService.GetMessagesAsync(new string[] { "INBOX" });

@@ -8,9 +8,7 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IMailService
     {
-        //void InitializeMessages();
-        //IEnumerable<MessageDTO> GetMessages();
-        Task InitializeMessagesAsync();
+        Task InitializeAsync();
         Task<IEnumerable<MessageDTO>> GetMessagesAsync();
     }
 }
