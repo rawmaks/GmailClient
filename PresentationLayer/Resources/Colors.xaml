@@ -3,22 +3,33 @@
                     xmlns:local="clr-namespace:PresentationLayer.Resources">
 
     <SolidColorBrush x:Key="BackgroundColor" Color="White"/>
-    
-    <SolidColorBrush x:Key="PrimaryColor" Color="#00BCD4"/>
-    <SolidColorBrush x:Key="PrimaryDarkColor" Color="#00BCD4"/>
-    <SolidColorBrush x:Key="ButtonForegroundColor" Color="White"/>
     <SolidColorBrush x:Key="BorderColor" Color="LightGray"/>
 
+    <SolidColorBrush x:Key="PrimaryColor" Color="#3F51B5"/>
+    <SolidColorBrush x:Key="PrimaryDarkColor" Color="#303F9F"/>
+    <SolidColorBrush x:Key="PrimaryLightColor" Color="#e6f3ff"/>
+    <SolidColorBrush x:Key="AccentColor" Color="#2196F3"/>
+    <SolidColorBrush x:Key="DividerColor" Color="#BDBDBD"/>
+    <SolidColorBrush x:Key="LightGrayColor" Color="#e8e8e8"/>
+    <SolidColorBrush x:Key="DarkGrayColor" Color="Gray"/>
+    <!-- TODO: Перейти на IconColor -->
+    <SolidColorBrush x:Key="ButtonForegroundColor" Color="White"/>
+    <SolidColorBrush x:Key="LightIconColor" Color="White"/>
+    <SolidColorBrush x:Key="DarkIconColor" Color="Gray"/>
+
+    <SolidColorBrush x:Key="PrimaryTextColor" Color="#212121"/>
+    <SolidColorBrush x:Key="SecondaryTextColor" Color="#757575"/>
+
     <SolidColorBrush x:Key="TransparentButtonBackgroundColor" Color="Transparent"/>
-    <SolidColorBrush x:Key="TransparentButtonBackgroundDarkColor" Color="LightGray"/>
+    <SolidColorBrush x:Key="TransparentButtonBackgroundDarkColor" Color="#e8e8e8"/>
     <SolidColorBrush x:Key="TransparentButtonForegroundColor" Color="Gray"/>
 
     <SolidColorBrush x:Key="MailItemButtonColor" Color="Gray"/>
 
-    <SolidColorBrush x:Key="WordColor" Color="#295391"/>
-    <SolidColorBrush x:Key="WordDarkColor" Color="#295391"/>
-    <SolidColorBrush x:Key="ExcelColor" Color="#1F6E43"/>
-    <SolidColorBrush x:Key="ExcelDarkColor" Color="#1F6E43"/>
+    <SolidColorBrush x:Key="WordColor" Color="#1976D2"/>
+    <SolidColorBrush x:Key="WordDarkColor" Color="#1569bd"/>
+    <SolidColorBrush x:Key="ExcelColor" Color="#009688"/>
+    <SolidColorBrush x:Key="ExcelDarkColor" Color="#00796B"/>
     
     
 </ResourceDictionary>

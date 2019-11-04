@@ -10,5 +10,6 @@ namespace BusinessLogicLayer.Interfaces
     {
         Task InitializeAsync();
         Task<IEnumerable<MessageDTO>> GetMessagesAsync();
+        Task<IEnumerable<MessageTypeDTO>> GetMessageTypesAsync();
     }
 }

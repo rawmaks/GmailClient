@@ -32,6 +32,7 @@ namespace PresentationLayer.ViewModels
 
         public async Task Load()
         {
+            await RefreshMessageTypesList();
             await RefreshList();
 
             await Task.Run(async () => {
@@ -46,6 +47,11 @@ namespace PresentationLayer.ViewModels
         {
             Messages = new ObservableCollection<Message>(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
             Title = "";
+        }
+
+        public async Task RefreshMessageTypesList()
+        {
+            MessageTypes = new ObservableCollection<MessageType>(_mappers.GetMessageTypeDTOToMessageTypeMapper().Map<IEnumerable<MessageTypeDTO>, List<MessageType>>(await _mailService.GetMessageTypesAsync()));
         }
 
 
@@ -63,6 +69,11 @@ namespace PresentationLayer.ViewModels
                 message.StatusID = 2;
             }
         });
+        public RelayCommand FilterListByType => new RelayCommand(obj =>
+        {
+            int id = (int)obj;
+            
+        });
 
 
         public bool IsBeingRefreshed { get; set; } // TODO: ???
@@ -79,6 +90,13 @@ namespace PresentationLayer.ViewModels
         {
             get { return messages; }
             set { messages = value; OnPropertyChanged(nameof(Messages)); }
+        }
+
+        private ObservableCollection<MessageType> messageTypes;
+        public ObservableCollection<MessageType> MessageTypes
+        {
+            get { return messageTypes; }
+            set { messageTypes = value; OnPropertyChanged(nameof(MessageTypes)); }
         }
 
 

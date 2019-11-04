@@ -63,6 +63,11 @@ namespace BusinessLogicLayer.Services
             return GetMessageToMessageDTOMapper().Map<IEnumerable<DALEntities.Message>, List<MessageDTO>>(await _database.Messages.GetListAsync());
         }
 
+        public async Task<IEnumerable<MessageTypeDTO>> GetMessageTypesAsync()
+        {
+            return GetMessageTypeToMessageTypeDTOMapper().Map<IEnumerable<DALEntities.MessageType>, List<MessageTypeDTO>>(await _database.MessageTypes.GetListAsync());
+        }
+
 
         // TODO: Move to Mappers
         private IMapper GetMessageToMessageDTOMapper()
@@ -80,6 +85,14 @@ namespace BusinessLogicLayer.Services
                 cfg.CreateMap<MessageDTO, DALEntities.Message>();
             }).CreateMapper();
         }
+
+        private IMapper GetMessageTypeToMessageTypeDTOMapper()
+        {
+            return new MapperConfiguration(cfg => {
+                cfg.CreateMap<DALEntities.MessageType, MessageTypeDTO>();
+            }).CreateMapper();
+        }
+
 
     }
 }

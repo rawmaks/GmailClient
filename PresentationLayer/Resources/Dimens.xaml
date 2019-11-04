@@ -7,7 +7,7 @@
     
     <!-- Margins -->
     <Thickness x:Key="FABMargin" Left="0" Right="30" Top="0" Bottom="30"/>
-    <Thickness x:Key="MailItemButonMargin" Left="10" Right="10" Top="10" Bottom="10"/>
+    <Thickness x:Key="MailListItemButonMargin" Left="10" Right="10" Top="10" Bottom="10"/>
 
     <!-- Borders -->
     <Thickness x:Key="RightBorder" Left="0" Right="1" Top="0" Bottom="0"/>
@@ -15,7 +15,7 @@
 
     <!-- Sizes -->
     <clr:Double x:Key="FABSize">60</clr:Double>
-    <clr:Double x:Key="MailItemButonSize">40</clr:Double>
+    <clr:Double x:Key="MailListItemButonSize">40</clr:Double>
     <clr:Double x:Key="HeaderButtonSize">40</clr:Double>
     <clr:Int32 x:Key="BorderSize">1</clr:Int32>
 
