@@ -40,7 +40,7 @@
                     <Button Style="{StaticResource ButtonWithIconStyle}" Content="{StaticResource RefreshIcon}" ToolTip="{StaticResource RefreshString}" 
                             Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
                             Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
-                            Command="{Binding Refresh}"/>
+                            Command="{Binding RefreshView}"/>
 
                     <!-- Settings Button -->
                     <!--<Button Style="{StaticResource ButtonWithIconStyle}" Content="{StaticResource SettingsIcon}" ToolTip="{StaticResource SettingsString}"
@@ -92,10 +92,10 @@
             <!-- LeftMenu -->
             <Grid Grid.Column="0">
 
-                <ListBox x:Name="LeftMenu" ItemsSource="{Binding MessageTypes}" Style="{DynamicResource LeftMenuStyle}" SelectedIndex="1">
+                <ListBox x:Name="LeftMenu" ItemsSource="{Binding MessageTypes}" Style="{DynamicResource LeftMenuStyle}" SelectedIndex="{Binding SelectedLeftMenuItemIndex, Mode=OneWay}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding FilterListByType}" CommandParameter="{Binding ElementName=LeftMenu, Path=SelectedItem}"/>
+                            <i:InvokeCommandAction Command="{Binding FilterList}" CommandParameter="{Binding ElementName=LeftMenu, Path=SelectedItem}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
 
@@ -139,7 +139,7 @@
                         <Button Style="{StaticResource ButtonWithIconStyle}" Content="{StaticResource SortIcon}" ToolTip="{StaticResource SortByDateString}" 
                             Background="{StaticResource TransparentButtonBackgroundColor}" BorderBrush="{StaticResource TransparentButtonBackgroundDarkColor}" Foreground="{StaticResource TransparentButtonForegroundColor}"
                             Width="{StaticResource HeaderButtonSize}" Height="{StaticResource HeaderButtonSize}"
-                            Command="{Binding Refresh}"/>
+                            Command="{Binding SortList}" CommandParameter="Date"/>
 
                     </StackPanel>
                     

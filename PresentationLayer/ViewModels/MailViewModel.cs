@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Data;
 
 namespace PresentationLayer.ViewModels
 {
@@ -40,47 +41,53 @@ namespace PresentationLayer.ViewModels
 
         public async Task Load()
         {
-            await RefreshTitles();
-
-            await RefreshMessageTypesList();
-            await RefreshList();
-
-            await Reload();
+            await Refresh();
+            await CheckUpdate();
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e) => Reload().Wait();
-        public async Task Reload()
+        private void OnTimedEvent(object source, ElapsedEventArgs e) => CheckUpdate().Wait();
+        public async Task CheckUpdate()
         {
             _timer.Stop();
 
-            if (IsAutomaticResponderEnabled)
-            {
-                await _mailService.InitializeAsync();
-                await _mailService.CheckResponsesAsync();
-                await _mailService.SendResponsesAsync();
-                await RefreshList();
-            }
+            await _mailService.InitializeAsync();
+            await _mailService.CheckResponsesAsync();
+            if (IsAutomaticResponderEnabled) await _mailService.SendResponsesAsync();
+            await GetMessageList();
 
             _timer.Start();
         }
 
-
-        public async Task RefreshList()
+        public async Task Refresh()
         {
-            Messages = new ObservableCollection<Message>(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
-            Title = "";
+            IsAutomaticResponderEnabled = true; // TODO: Get from AppSettings in DB
+
+            await GetUser();
+            
+            await GetMessageTypesList();
+            SelectedLeftMenuItemIndex = SelectedLeftMenuItemIndex; // TODO: Get from AppSettings in DB
+
+            await GetMessageList();
         }
 
-        public async Task RefreshMessageTypesList()
+        public async Task GetMessageList()
+        {
+            Messages = new CollectionView(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
+            //Messages = new ObservableCollection<Message>(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
+            IsSortByAsc = !IsSortByAsc;//true; // TODO: Get from AppSettings in DB
+            SortListByType();
+            Title = default;
+        }
+
+        public async Task GetMessageTypesList()
         {
             List<MessageType> messageTypes = _mappers.GetMessageTypeDTOToMessageTypeMapper().Map<IEnumerable<MessageTypeDTO>, List<MessageType>>(await _mailService.GetMessageTypesAsync());
             messageTypes.FirstOrDefault(m => m.ID == 3).Text = "Все входящие";
             MessageTypes = new ObservableCollection<MessageType>(messageTypes.Where(m => m.ID > 2));
         }
 
-        public async Task RefreshTitles()
+        public async Task GetUser()
         {
-            IsAutomaticResponderEnabled = true;
             UserEmail = _mappers.GetUserDTOToUserMapper().Map<UserDTO, User>(await _mailService.GetCurrentUserAsync()).Email;
         }
 
@@ -89,27 +96,70 @@ namespace PresentationLayer.ViewModels
         public RelayCommand Minimize => new RelayCommand(obj => (obj as MailView).WindowState = WindowState.Minimized);
         public RelayCommand DragMove => new RelayCommand(obj => (obj as MailView).DragMove());
         public RelayCommand OpenSettings => new RelayCommand(obj => (obj as MailView).Close());
-        public RelayCommand Refresh => new RelayCommand(obj => Task.Run(async () => await RefreshList()));
+        public RelayCommand RefreshView => new RelayCommand(obj => Task.Run(async () => await Refresh()));
+        public RelayCommand SortList => new RelayCommand(obj => SortListByType(obj as string));
+        public RelayCommand FilterList => new RelayCommand(obj =>
+        {
+            MessageType type = obj as MessageType;
+            if (type != null && Messages != null)
+            {
+                SelectedLeftMenuItemIndex = MessageTypes.IndexOf(type); // TODO: Write to DB (AppSettings)
+                FilterListByType(type);
+            }
+        });
         public RelayCommand SendMail => new RelayCommand(obj =>
         {
             int id = (int)obj;
-            Message message = Messages.FirstOrDefault(x => x.ID == id);
+            Message message = Messages.SourceCollection.Cast<Message>().FirstOrDefault(x => x.ID == id);
             if (message != null && message?.StatusID != 2)
             {
                 message.StatusID = 2;
             }
         });
-        public RelayCommand FilterListByType => new RelayCommand(obj =>
+
+
+        // TODO: Это конечно нужно будет переделать
+        private void SortListByType(string type = "Date")
         {
-            MessageType type = obj as MessageType;
-            if (type != null && Messages != null)
+            ICollectionView sortView = CollectionViewSource.GetDefaultView(Messages.SourceCollection.Cast<Message>());
+            sortView.SortDescriptions.Clear();
+            if (IsSortByAsc) { sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Descending)); IsSortByAsc = false; }
+            else { sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Ascending)); IsSortByAsc = true; }
+            Messages = sortView;
+        }
+
+        // TODO: Это конечно нужно будет переделать
+        private void FilterListByType(MessageType type)
+        {
+            List<int> messageTypeIDs = new List<int>();
+            Recursion(type);
+            void Recursion(MessageType type)
             {
-                
+                List<MessageType> children = MessageTypes.Where(m => m.ParentID == type.ID).ToList();
+
+                if (children?.Count > 0)
+                {
+                    foreach (MessageType child in MessageTypes.Where(m => m.ParentID == type.ID))
+                    {
+                        messageTypeIDs.Add(child.ID);
+                        Recursion(child);
+                    }
+                }
+                else if (!messageTypeIDs.Any(m => m == type.ID)) messageTypeIDs.Add(type.ID);
             }
-        });
+
+            ICollectionView filterView = CollectionViewSource.GetDefaultView(Messages.SourceCollection.Cast<Message>());
+            filterView.Filter = item =>
+            {
+                Message message = item as Message;
+                return message != null && messageTypeIDs.Any(m => m == message?.MessageTypeID);
+            };
+            Messages = filterView;
+        }
 
 
         public bool IsBeingRefreshed { get; set; } // TODO: ???
+        public bool IsSortByAsc { get; set; }
 
         private bool isAutomaticResponderEnabled;
         public bool IsAutomaticResponderEnabled
@@ -118,10 +168,17 @@ namespace PresentationLayer.ViewModels
             set { isAutomaticResponderEnabled = value; OnPropertyChanged(nameof(IsAutomaticResponderEnabled)); }
         }
 
+        private int selectedLeftMenuItemIndex;
+        public int SelectedLeftMenuItemIndex
+        {
+            get { return selectedLeftMenuItemIndex; }
+            set { selectedLeftMenuItemIndex = value; OnPropertyChanged(nameof(SelectedLeftMenuItemIndex)); }
+        }
+
         private string title;
         public string Title
         {
-            get { return $"Входящие ({(Messages?.Count > 0 ? Messages.Count : default)})"; }
+            get { return $"Входящие ({(Messages?.Cast<Message>().Count() > 0 ? Messages.Cast<Message>().Count() : default )})"; }
             set { title = value; OnPropertyChanged(nameof(Title)); }
         }
 
@@ -132,8 +189,14 @@ namespace PresentationLayer.ViewModels
             set { userEmail = value; OnPropertyChanged(nameof(UserEmail)); }
         }
 
-        private ObservableCollection<Message> messages;
-        public ObservableCollection<Message> Messages
+        //private ObservableCollection<Message> messages;
+        //public ObservableCollection<Message> Messages
+        //{
+        //    get { return messages; }
+        //    set { messages = value; OnPropertyChanged(nameof(Messages)); }
+        //}
+        private ICollectionView messages;
+        public ICollectionView Messages
         {
             get { return messages; }
             set { messages = value; OnPropertyChanged(nameof(Messages)); }

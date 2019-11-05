@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Helpers
         public MessageDTO ConvertToCorrectType(Message message)
         {
             if (message == null) return null;
-
+            
             try
             {
                 MessageDTO result = new MessageDTO();
@@ -35,7 +35,10 @@ namespace BusinessLogicLayer.Helpers
                 result.Subject = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "Subject".ToLower())?.Value;
                 result.Sender = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "From".ToLower())?.Value;
                 result.RecipientEmail = message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "To".ToLower())?.Value;
-                result.Date = _dateTimeHelper.ConvertFromGmailFormat(message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "Date".ToLower())?.Value);
+                //result.Date = _dateTimeHelper.ConvertFromGmailFormat(message?.Payload?.Headers?.FirstOrDefault(m => m.Name.ToLower() == "Date".ToLower())?.Value);
+                result.Date = _dateTimeHelper.ConvertFromGmailFormat(message?.InternalDate);
+
+                if (string.IsNullOrWhiteSpace(result.Subject)) result.Subject = "Без темы";
 
                 if (!string.IsNullOrWhiteSpace(result.Sender))
                 {
