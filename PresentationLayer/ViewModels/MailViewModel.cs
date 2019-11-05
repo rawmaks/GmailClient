@@ -32,15 +32,17 @@ namespace PresentationLayer.ViewModels
 
         public async Task Load()
         {
+            await RefreshTitles();
+
             await RefreshMessageTypesList();
             await RefreshList();
 
             await Task.Run(async () => {
                 await _mailService.InitializeAsync();
+                await _mailService.CheckResponsesAsync();
+                await _mailService.SendResponsesAsync();
                 await RefreshList();
             });
-
-            // TODO: Запустить проверку на отправленные ответы
         }
 
         public async Task RefreshList()
@@ -51,7 +53,14 @@ namespace PresentationLayer.ViewModels
 
         public async Task RefreshMessageTypesList()
         {
-            MessageTypes = new ObservableCollection<MessageType>(_mappers.GetMessageTypeDTOToMessageTypeMapper().Map<IEnumerable<MessageTypeDTO>, List<MessageType>>(await _mailService.GetMessageTypesAsync()));
+            List<MessageType> messageTypes = _mappers.GetMessageTypeDTOToMessageTypeMapper().Map<IEnumerable<MessageTypeDTO>, List<MessageType>>(await _mailService.GetMessageTypesAsync());
+            messageTypes.FirstOrDefault(m => m.ID == 3).Text = "Все входящие";
+            MessageTypes = new ObservableCollection<MessageType>(messageTypes.Where(m => m.ID > 2));
+        }
+
+        public async Task RefreshTitles()
+        {
+            UserEmail = _mappers.GetUserDTOToUserMapper().Map<UserDTO, User>(await _mailService.GetCurrentUserAsync()).Email;
         }
 
 
@@ -71,8 +80,11 @@ namespace PresentationLayer.ViewModels
         });
         public RelayCommand FilterListByType => new RelayCommand(obj =>
         {
-            int id = (int)obj;
-            
+            MessageType type = obj as MessageType;
+            if (type != null && Messages != null)
+            {
+                
+            }
         });
 
 
@@ -83,6 +95,13 @@ namespace PresentationLayer.ViewModels
         {
             get { return $"Входящие ({(Messages?.Count > 0 ? Messages.Count : default)})"; }
             set { title = value; OnPropertyChanged(nameof(Title)); }
+        }
+
+        private string userEmail;
+        public string UserEmail
+        {
+            get { return userEmail; }
+            set { userEmail = value; OnPropertyChanged(nameof(UserEmail)); }
         }
 
         private ObservableCollection<Message> messages;

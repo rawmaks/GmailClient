@@ -2,6 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PresentationLayer.Resources">
 
-    <DropShadowEffect x:Key="ShadowEffect" BlurRadius="8" Direction="270" Opacity="0.2" ShadowDepth="2"/>
+    <DropShadowEffect x:Key="FABShadowEffect" BlurRadius="18" Direction="270" Opacity="0.4" ShadowDepth="4" RenderingBias="Quality"/>
 
 </ResourceDictionary>

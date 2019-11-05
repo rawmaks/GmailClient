@@ -25,5 +25,17 @@ namespace PresentationLayer.Model
                 cfg.CreateMap<MessageTypeDTO, MessageType>();
             }).CreateMapper();
         }
+
+
+        public IMapper GetUserDTOToUserMapper()
+        {
+            return new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserDTO, User>();
+            }).CreateMapper();
+        }
+
+
+
     }
 }

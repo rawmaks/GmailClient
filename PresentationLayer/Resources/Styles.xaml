@@ -27,7 +27,23 @@
         <Setter Property="Panel.ZIndex" Value="10"/>
     </Style>
 
+
+    <!-- Text -->
     
+    <Style x:Key="PrimaryTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+        <Setter Property="TextTrimming" Value="WordEllipsis"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="SecondaryTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryTextColor}"/>
+        <Setter Property="TextTrimming" Value="WordEllipsis"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
     <!-- Buttons -->
 
     <Style x:Key="ButtonWithIconStyle" TargetType="Button">
@@ -39,7 +55,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Border" Tag="{TemplateBinding Tag}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                    <Border x:Name="Border" Tag="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
                         <Viewbox Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                             <Canvas Width="24" Height="24" Margin="14">
                                 <Path Data="{Binding ElementName=Border, Path=Tag}" Fill="{TemplateBinding Foreground}"/>
@@ -67,12 +83,12 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Border" Tag="{TemplateBinding Tag}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
                         <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                            <Viewbox Width="{TemplateBinding Height}" Height="{TemplateBinding Height}">
                                 <Canvas Width="24" Height="24" Margin="14">
                                     <Path Data="{Binding ElementName=Border, Path=Tag}" Fill="{TemplateBinding Foreground}"/>
                                 </Canvas>
                             </Viewbox>
-                            <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" Margin="0,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -141,6 +157,52 @@
         </Setter>
     </Style>
 
+    
+    <!-- CheckBoxes -->
+
+    <Style x:Key="CheckBoxSwitchStyle" TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+
+                <ControlTemplate TargetType="CheckBox">
+
+                    <StackPanel Orientation="Horizontal" Margin="12,0,0,0">
+
+                        <Viewbox Width="18" Height="18" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Canvas Width="24" Height="24">
+                                <Path x:Name="Line" Data="M20,14H4V10H20" Fill="{DynamicResource LightGrayColor}"/>
+                                <Path x:Name="Circle" Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" Fill="{DynamicResource DividerColor}" Margin="-12,0,0,0"/>
+                            </Canvas>
+                        </Viewbox>
+
+
+                        <Label Content="{TemplateBinding Content}" Margin="10,0" Foreground="{DynamicResource SecondaryTextColor}" VerticalContentAlignment="Center" FontSize="14"/>
+
+                    </StackPanel>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Line" Property="Path.Fill" Value="{DynamicResource AccentColor}"/>
+                            <Setter TargetName="Circle" Property="Path.Fill" Value="{DynamicResource PrimaryColor}"/>
+                            <Setter TargetName="Circle" Property="Path.Margin" Value="12,0,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="Line" Property="Path.Fill" Value="{DynamicResource LightGrayColor}"/>
+                            <Setter TargetName="Circle" Property="Path.Fill" Value="{DynamicResource DividerColor}"/>
+                            <Setter TargetName="Circle" Property="Path.Margin" Value="-12,0,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="FontWeight" Value="DemiBold"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <!-- Styles for MailList -->
 
@@ -175,8 +237,14 @@
         </Setter>
     </Style>
 
-    <!-- TODO: Переделать это нечто -->
     <Style x:Key="MailListItemButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource LightIconColor}"/>
+        <Setter Property="Margin" Value="{DynamicResource MailListItemButonMargin}"/>
+        <Setter Property="Width" Value="{DynamicResource MailListItemButonSize}"/>
+        <Setter Property="Height" Value="{DynamicResource MailListItemButonSize}"/>
+        <Setter Property="ToolTip" Value="TODO"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
@@ -229,6 +297,51 @@
                     </ControlTemplate.Triggers>
                     
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LeftMenuStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="0,10,0,0"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Height" Value="28"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Margin" Value="-10,0,0,0"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+
+                            <ControlTemplate TargetType="ListBoxItem">
+
+                                <Border CornerRadius="14" Tag="{TemplateBinding Tag}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                    <ContentPresenter/>
+                                </Border>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource PrimaryLightColor}"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource LightGrayColor}"/>
+                                    </Trigger>
+                                    <Trigger Property="Tag" Value="1">
+
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
             </Setter.Value>
         </Setter>
     </Style>

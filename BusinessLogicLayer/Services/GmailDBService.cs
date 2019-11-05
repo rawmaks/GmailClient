@@ -58,6 +58,21 @@ namespace BusinessLogicLayer.Services
             }
         }
 
+        public async Task CheckResponsesAsync()
+        {
+            
+        }
+
+        public async Task SendResponsesAsync()
+        {
+            
+        }
+
+        public async Task<UserDTO> GetCurrentUserAsync()
+        {
+            return new UserDTO { Email = (await _apiService.GetProfileAsync()).EmailAddress };
+        }
+
         public async Task<IEnumerable<MessageDTO>> GetMessagesAsync()
         {
             return GetMessageToMessageDTOMapper().Map<IEnumerable<DALEntities.Message>, List<MessageDTO>>(await _database.Messages.GetListAsync());
@@ -93,6 +108,6 @@ namespace BusinessLogicLayer.Services
             }).CreateMapper();
         }
 
-
+        
     }
 }

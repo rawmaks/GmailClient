@@ -6,7 +6,10 @@
     <clr:String x:Key="CloseString">Закрыть</clr:String>
     <clr:String x:Key="MinimizeString">Свернуть</clr:String>
     <clr:String x:Key="SettingsString">Настройки</clr:String>
+    <clr:String x:Key="OpenSettingsString">Открыть настройки</clr:String>
     <clr:String x:Key="RefreshString">Обновить</clr:String>
+    <clr:String x:Key="SortString">Сортировка</clr:String>
+    <clr:String x:Key="SortByDateString">Сортировка по дате</clr:String>
     
     <clr:String x:Key="ExportToWordString">Экспортировать в Word</clr:String>
     <clr:String x:Key="ExportToExcelString">Экспортировать в Excel</clr:String>

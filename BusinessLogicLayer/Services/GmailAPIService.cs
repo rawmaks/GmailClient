@@ -28,14 +28,9 @@ namespace BusinessLogicLayer.Services
         }
 
 
-        public List<Message> GetMessages(string[] labels = null, string query = null, string userId = "me")
+        public async Task<Profile> GetProfileAsync(string userId = "me")
         {
-            return GetMessages(_service, labels, query, userId);
-        }
-
-        public Message GetMessageByID(string messageId, string userId = "me")
-        {
-            return GetMessageByID(_service, messageId, userId);
+            return await GetProfileAsync(_service, userId);
         }
 
         public async Task<List<Message>> GetMessagesAsync(string[] labels = null, string query = null, string userId = "me")
@@ -46,6 +41,16 @@ namespace BusinessLogicLayer.Services
         public async Task<Message> GetMessageByIDAsync(string messageId, string userId = "me")
         {
             return await GetMessageByIDAsync(_service, messageId, userId);
+        }
+
+        public List<Message> GetMessages(string[] labels = null, string query = null, string userId = "me")
+        {
+            return GetMessages(_service, labels, query, userId);
+        }
+
+        public Message GetMessageByID(string messageId, string userId = "me")
+        {
+            return GetMessageByID(_service, messageId, userId);
         }
 
 
@@ -81,35 +86,11 @@ namespace BusinessLogicLayer.Services
             return service;
         }
 
-        private List<Message> GetMessages(GmailService service, string[] labels = null, string query = null, string userId = "me")
-        {
-            List<Message> result = new List<Message>();
-            UsersResource.MessagesResource.ListRequest request = service.Users.Messages.List(userId);
-            if (labels != null) request.LabelIds = labels;
-            if (!string.IsNullOrWhiteSpace(query)) request.Q = query;
-
-            do
-            {
-                try
-                {
-                    ListMessagesResponse response = request.Execute();
-                    result.AddRange(response.Messages);
-                    request.PageToken = response.NextPageToken;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("An error occurred: " + e.Message);
-                }
-            } while (!string.IsNullOrEmpty(request.PageToken));
-
-            return result;
-        }
-
-        private Message GetMessageByID(GmailService service, string messageId, string userId = "me")
+        private async Task<Profile> GetProfileAsync(GmailService service, string userId = "me")
         {
             try
             {
-                return service.Users.Messages.Get(userId, messageId).Execute();
+                return await service.Users.GetProfile(userId).ExecuteAsync();
             }
             catch (Exception e)
             {
@@ -156,5 +137,44 @@ namespace BusinessLogicLayer.Services
 
             return null;
         }
+
+        private List<Message> GetMessages(GmailService service, string[] labels = null, string query = null, string userId = "me")
+        {
+            List<Message> result = new List<Message>();
+            UsersResource.MessagesResource.ListRequest request = service.Users.Messages.List(userId);
+            if (labels != null) request.LabelIds = labels;
+            if (!string.IsNullOrWhiteSpace(query)) request.Q = query;
+
+            do
+            {
+                try
+                {
+                    ListMessagesResponse response = request.Execute();
+                    result.AddRange(response.Messages);
+                    request.PageToken = response.NextPageToken;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("An error occurred: " + e.Message);
+                }
+            } while (!string.IsNullOrEmpty(request.PageToken));
+
+            return result;
+        }
+
+        private Message GetMessageByID(GmailService service, string messageId, string userId = "me")
+        {
+            try
+            {
+                return service.Users.Messages.Get(userId, messageId).Execute();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occurred: " + e.Message);
+            }
+
+            return null;
+        }
+
     }
 }

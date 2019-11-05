@@ -5,8 +5,8 @@
     <SolidColorBrush x:Key="BackgroundColor" Color="White"/>
     <SolidColorBrush x:Key="BorderColor" Color="LightGray"/>
 
-    <SolidColorBrush x:Key="PrimaryColor" Color="#3F51B5"/>
-    <SolidColorBrush x:Key="PrimaryDarkColor" Color="#303F9F"/>
+    <SolidColorBrush x:Key="PrimaryColor" Color="#1976D2"/>
+    <SolidColorBrush x:Key="PrimaryDarkColor" Color="#1569bd"/>
     <SolidColorBrush x:Key="PrimaryLightColor" Color="#e6f3ff"/>
     <SolidColorBrush x:Key="AccentColor" Color="#2196F3"/>
     <SolidColorBrush x:Key="DividerColor" Color="#BDBDBD"/>
