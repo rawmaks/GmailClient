@@ -34,10 +34,10 @@ namespace DataAccessLayer.DBContext
 
             modelBuilder.Entity<MessageStatus>().HasData(new List<MessageStatus>
             {
-                new MessageStatus { ID = 1, CreateDate = DateTime.Now, Name = "New" },
-                new MessageStatus { ID = 2, CreateDate = DateTime.Now, Name = "Success" },
-                new MessageStatus { ID = 3, CreateDate = DateTime.Now, Name = "Error" },
-                new MessageStatus { ID = 4, CreateDate = DateTime.Now, Name = "Process" }
+                new MessageStatus { ID = 1, CreateDate = DateTime.Now, Name = "New", Text = "Отправить ответ" },
+                new MessageStatus { ID = 2, CreateDate = DateTime.Now, Name = "Success", Text = "Ответ отправлен" },
+                new MessageStatus { ID = 3, CreateDate = DateTime.Now, Name = "Error", Text = "Ошибка. Повторить отправку" },
+                new MessageStatus { ID = 4, CreateDate = DateTime.Now, Name = "Process", Text = "Ответ отправляется" }
             });
 
             base.OnModelCreating(modelBuilder);

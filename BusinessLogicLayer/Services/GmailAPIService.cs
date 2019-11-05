@@ -53,6 +53,11 @@ namespace BusinessLogicLayer.Services
             return GetMessageByID(_service, messageId, userId);
         }
 
+        public async Task<Message> SendMessageAsync(string userId, Message email)
+        {
+            return await SendMessageAsync(_service, userId, email);
+        }
+
 
 
 
@@ -167,6 +172,20 @@ namespace BusinessLogicLayer.Services
             try
             {
                 return service.Users.Messages.Get(userId, messageId).Execute();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occurred: " + e.Message);
+            }
+
+            return null;
+        }
+
+        private async Task<Message> SendMessageAsync(GmailService service, string userId, Message email)
+        {
+            try
+            {
+                return await service.Users.Messages.Send(email, userId).ExecuteAsync();
             }
             catch (Exception e)
             {

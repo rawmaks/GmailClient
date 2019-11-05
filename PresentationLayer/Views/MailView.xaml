@@ -145,7 +145,7 @@
                     
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-                        <CheckBox Style="{DynamicResource CheckBoxSwitchStyle}" Content="Автоответчик" IsChecked="True"/>
+                        <CheckBox Style="{DynamicResource CheckBoxSwitchStyle}" Content="Автоответчик" IsChecked="{Binding IsAutomaticResponderEnabled}"/>
 
                     </StackPanel>
 

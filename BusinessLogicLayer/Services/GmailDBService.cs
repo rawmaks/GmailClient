@@ -60,12 +60,12 @@ namespace BusinessLogicLayer.Services
 
         public async Task CheckResponsesAsync()
         {
-            
+            // TODO: Проверка наличия ответов на новые письма (может быть у входящего письма есть поле, обозначающее, что был отправлен ответ)
         }
 
         public async Task SendResponsesAsync()
         {
-            
+            // TODO: Отправка ответов новым письмам (+ при первой инициализации отправка ответов либо с 1 ноября, либо с запуска приложения, скорее второе)
         }
 
         public async Task<UserDTO> GetCurrentUserAsync()

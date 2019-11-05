@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 
 namespace PresentationLayer.ViewModels
@@ -21,10 +22,17 @@ namespace PresentationLayer.ViewModels
         private readonly IMailService _mailService;
         private readonly Mappers _mappers;
 
+        private readonly Timer _timer;
+
         public MailViewModel(IMailService mailService)
         {
             _mailService = mailService;
             _mappers = Mappers.Instance;
+
+            _timer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds);
+            _timer.Elapsed += OnTimedEvent;
+            _timer.AutoReset = true;
+            _timer.Stop(); // То же, что и _timer.Enabled = false;
 
             Task.Run(async () => await Load()); //Task.Run(() => { });
         }
@@ -37,13 +45,25 @@ namespace PresentationLayer.ViewModels
             await RefreshMessageTypesList();
             await RefreshList();
 
-            await Task.Run(async () => {
+            await Reload();
+        }
+
+        private void OnTimedEvent(object source, ElapsedEventArgs e) => Reload().Wait();
+        public async Task Reload()
+        {
+            _timer.Stop();
+
+            if (IsAutomaticResponderEnabled)
+            {
                 await _mailService.InitializeAsync();
                 await _mailService.CheckResponsesAsync();
                 await _mailService.SendResponsesAsync();
                 await RefreshList();
-            });
+            }
+
+            _timer.Start();
         }
+
 
         public async Task RefreshList()
         {
@@ -60,6 +80,7 @@ namespace PresentationLayer.ViewModels
 
         public async Task RefreshTitles()
         {
+            IsAutomaticResponderEnabled = true;
             UserEmail = _mappers.GetUserDTOToUserMapper().Map<UserDTO, User>(await _mailService.GetCurrentUserAsync()).Email;
         }
 
@@ -89,6 +110,13 @@ namespace PresentationLayer.ViewModels
 
 
         public bool IsBeingRefreshed { get; set; } // TODO: ???
+
+        private bool isAutomaticResponderEnabled;
+        public bool IsAutomaticResponderEnabled
+        {
+            get { return isAutomaticResponderEnabled; }
+            set { isAutomaticResponderEnabled = value; OnPropertyChanged(nameof(IsAutomaticResponderEnabled)); }
+        }
 
         private string title;
         public string Title
