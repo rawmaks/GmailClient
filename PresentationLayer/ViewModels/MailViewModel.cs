@@ -65,19 +65,16 @@ namespace PresentationLayer.ViewModels
             IsAutomaticResponderEnabled = true; // TODO: Get from AppSettings in DB
 
             await GetUser();
-            
             await GetMessageTypesList();
-            SelectedLeftMenuItemIndex = SelectedLeftMenuItemIndex; // TODO: Get from AppSettings in DB
-
             await GetMessageList();
         }
 
         public async Task GetMessageList()
         {
             Messages = new CollectionView(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
-            IsSortByAsc = !IsSortByAsc;//true; // TODO: Get from AppSettings in DB
+            IsSortByAsc = false; // TODO: Get from AppSettings in DB
             SortListByType();
-            // TODO: Filter
+            if (MessageTypes != null && SelectedLeftMenuItem != null) FilterListByType(SelectedLeftMenuItem);
             Title = default;
         }
 
@@ -88,12 +85,11 @@ namespace PresentationLayer.ViewModels
             MessageTypes = new CollectionView(messageTypes);
 
             ICollectionView filterView = CollectionViewSource.GetDefaultView(MessageTypes.SourceCollection.Cast<MessageType>());
-            filterView.Filter = item =>
-            {
-                MessageType messageType = item as MessageType;
-                return messageType != null && messageType.ID > (int)Enums.MessageTypes.None && messageType.ID != (int)Enums.MessageTypes.InboxNone;
-            };
+            filterView.Filter = item => { return (item as MessageType) != null && (item as MessageType).ID > (int)Enums.MessageTypes.None && (item as MessageType).ID != (int)Enums.MessageTypes.InboxNone; };
             MessageTypes = filterView;
+
+            // Bug: При обновлении переключается на самый первый пункт, хотя в выбранном нужный
+            SelectedLeftMenuItem = MessageTypes.Cast<MessageType>().ToList().FirstOrDefault(m => m.ID == (int)Enums.MessageTypes.InboxParticipant); // TODO: Get from AppSettings in DB
         }
 
         public async Task GetUser()
@@ -107,13 +103,17 @@ namespace PresentationLayer.ViewModels
         public RelayCommand DragMove => new RelayCommand(obj => (obj as MailView).DragMove());
         public RelayCommand OpenSettings => new RelayCommand(obj => (obj as MailView).Close());
         public RelayCommand RefreshView => new RelayCommand(obj => Task.Run(async () => await Refresh()));
-        public RelayCommand SortList => new RelayCommand(obj => SortListByType(obj as string));
+        public RelayCommand SortList => new RelayCommand(obj => 
+        {
+            IsSortByAsc = IsSortByAsc == true ? false : true; // TODO: Write to DB (AppSettings)
+            SortListByType(obj as string);
+        });
         public RelayCommand FilterList => new RelayCommand(obj =>
         {
             MessageType type = obj as MessageType;
             if (type != null && Messages != null)
             {
-                SelectedLeftMenuItemIndex = MessageTypes.Cast<MessageType>().ToList().IndexOf(type); // TODO: Write to DB (AppSettings)
+                SelectedLeftMenuItem = type;//MessageTypes.Cast<MessageType>().ToList().IndexOf(type); // TODO: Write to DB (AppSettings)
                 FilterListByType(type);
             }
         });
@@ -133,8 +133,8 @@ namespace PresentationLayer.ViewModels
         {
             ICollectionView sortView = CollectionViewSource.GetDefaultView(Messages.SourceCollection.Cast<Message>());
             sortView.SortDescriptions.Clear();
-            if (IsSortByAsc) { sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Descending)); IsSortByAsc = false; }
-            else { sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Ascending)); IsSortByAsc = true; }
+            if (IsSortByAsc) sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Ascending));
+            else sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Descending));
             Messages = sortView;
             Title = default;
         }
@@ -160,11 +160,7 @@ namespace PresentationLayer.ViewModels
             }
             
             ICollectionView filterView = CollectionViewSource.GetDefaultView(Messages.SourceCollection.Cast<Message>());
-            filterView.Filter = item =>
-            {
-                Message message = item as Message;
-                return message != null && messageTypeIDs.Any(m => m == message?.MessageTypeID);
-            };
+            filterView.Filter = item => { return (item as Message) != null && messageTypeIDs.Any(m => m == (item as Message)?.MessageTypeID); };
             Messages = filterView;
             Title = default;
         }
@@ -180,11 +176,11 @@ namespace PresentationLayer.ViewModels
             set { isAutomaticResponderEnabled = value; OnPropertyChanged(nameof(IsAutomaticResponderEnabled)); }
         }
 
-        private int selectedLeftMenuItemIndex;
-        public int SelectedLeftMenuItemIndex
+        private MessageType selectedLeftMenuItem;
+        public MessageType SelectedLeftMenuItem
         {
-            get { return selectedLeftMenuItemIndex; }
-            set { selectedLeftMenuItemIndex = value; OnPropertyChanged(nameof(SelectedLeftMenuItemIndex)); }
+            get { return selectedLeftMenuItem; }
+            set { selectedLeftMenuItem = value; OnPropertyChanged(nameof(SelectedLeftMenuItem)); }
         }
 
         private string title;

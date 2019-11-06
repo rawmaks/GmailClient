@@ -92,7 +92,7 @@
             <!-- LeftMenu -->
             <Grid Grid.Column="0">
 
-                <ListBox x:Name="LeftMenu" ItemsSource="{Binding MessageTypes}" Style="{DynamicResource LeftMenuStyle}" SelectedIndex="{Binding SelectedLeftMenuItemIndex, Mode=OneWay}">
+                <ListBox x:Name="LeftMenu" ItemsSource="{Binding MessageTypes}" Style="{DynamicResource LeftMenuStyle}" SelectedItem="{Binding SelectedLeftMenuItem, Mode=OneWay}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding FilterList}" CommandParameter="{Binding ElementName=LeftMenu, Path=SelectedItem}"/>
