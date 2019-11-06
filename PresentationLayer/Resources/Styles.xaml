@@ -279,6 +279,10 @@
                                                         <Setter Property="Data" Value="{DynamicResource MailSendIconGeometry}"/>
                                                         <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
                                                     </Trigger>
+                                                    <Trigger Property="MinWidth" Value="5">
+                                                        <Setter Property="Data" Value="{DynamicResource MailIconGeometry}"/>
+                                                        <Setter Property="Fill" Value="{DynamicResource DarkIconColor}"/>
+                                                    </Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Path.Style>
@@ -293,6 +297,10 @@
                         <Trigger Property="MinWidth" Value="2">
                             <Setter TargetName="Ellipse" Property="Fill" Value="{DynamicResource LightGrayColor}"/>
                             <Setter Property="ToolTip" Value="Ответ отправлен"/>
+                        </Trigger>
+                        <Trigger Property="MinWidth" Value="5">
+                            <Setter TargetName="Ellipse" Property="Fill" Value="{DynamicResource LightGrayColor}"/>
+                            <Setter Property="ToolTip" Value="Ответ не нужен"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                     

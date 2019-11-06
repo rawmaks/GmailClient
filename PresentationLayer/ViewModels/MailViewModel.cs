@@ -73,9 +73,9 @@ namespace PresentationLayer.ViewModels
         public async Task GetMessageList()
         {
             Messages = new CollectionView(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
-            //Messages = new ObservableCollection<Message>(_mappers.GetMessageDTOToMessageMapper().Map<IEnumerable<MessageDTO>, List<Message>>(await _mailService.GetMessagesAsync()));
             IsSortByAsc = !IsSortByAsc;//true; // TODO: Get from AppSettings in DB
             SortListByType();
+            // TODO: Filter
             Title = default;
         }
 
@@ -113,7 +113,7 @@ namespace PresentationLayer.ViewModels
             Message message = Messages.SourceCollection.Cast<Message>().FirstOrDefault(x => x.ID == id);
             if (message != null && message?.StatusID != 2)
             {
-                message.StatusID = 2;
+                message.StatusID = new Random().Next(2, 6);
             }
         });
 
@@ -189,12 +189,6 @@ namespace PresentationLayer.ViewModels
             set { userEmail = value; OnPropertyChanged(nameof(UserEmail)); }
         }
 
-        //private ObservableCollection<Message> messages;
-        //public ObservableCollection<Message> Messages
-        //{
-        //    get { return messages; }
-        //    set { messages = value; OnPropertyChanged(nameof(Messages)); }
-        //}
         private ICollectionView messages;
         public ICollectionView Messages
         {

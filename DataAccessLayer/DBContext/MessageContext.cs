@@ -37,7 +37,8 @@ namespace DataAccessLayer.DBContext
                 new MessageStatus { ID = 1, CreateDate = DateTime.Now, Name = "New", Text = "Отправить ответ" },
                 new MessageStatus { ID = 2, CreateDate = DateTime.Now, Name = "Success", Text = "Ответ отправлен" },
                 new MessageStatus { ID = 3, CreateDate = DateTime.Now, Name = "Error", Text = "Ошибка. Повторить отправку" },
-                new MessageStatus { ID = 4, CreateDate = DateTime.Now, Name = "Process", Text = "Ответ отправляется" }
+                new MessageStatus { ID = 4, CreateDate = DateTime.Now, Name = "Process", Text = "Ответ отправляется" },
+                new MessageStatus { ID = 5, CreateDate = DateTime.Now, Name = "JustMail", Text = "Это письмо не подходит для отправки ответа" }
             });
 
             base.OnModelCreating(modelBuilder);
