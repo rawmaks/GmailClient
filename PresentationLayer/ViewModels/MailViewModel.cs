@@ -85,7 +85,15 @@ namespace PresentationLayer.ViewModels
         {
             List<MessageType> messageTypes = _mappers.GetMessageTypeDTOToMessageTypeMapper().Map<IEnumerable<MessageTypeDTO>, List<MessageType>>(await _mailService.GetMessageTypesAsync());
             messageTypes.FirstOrDefault(m => m.ID == (int)Enums.MessageTypes.Inbox).Text = "Все входящие";
-            MessageTypes = new ObservableCollection<MessageType>(messageTypes.Where(m => m.ID > (int)Enums.MessageTypes.None && m.ID != (int)Enums.MessageTypes.InboxNone));
+            MessageTypes = new CollectionView(messageTypes);
+
+            ICollectionView filterView = CollectionViewSource.GetDefaultView(MessageTypes.SourceCollection.Cast<MessageType>());
+            filterView.Filter = item =>
+            {
+                MessageType messageType = item as MessageType;
+                return messageType != null && messageType.ID > (int)Enums.MessageTypes.None && messageType.ID != (int)Enums.MessageTypes.InboxNone;
+            };
+            MessageTypes = filterView;
         }
 
         public async Task GetUser()
@@ -105,7 +113,7 @@ namespace PresentationLayer.ViewModels
             MessageType type = obj as MessageType;
             if (type != null && Messages != null)
             {
-                SelectedLeftMenuItemIndex = MessageTypes.IndexOf(type); // TODO: Write to DB (AppSettings)
+                SelectedLeftMenuItemIndex = MessageTypes.Cast<MessageType>().ToList().IndexOf(type); // TODO: Write to DB (AppSettings)
                 FilterListByType(type);
             }
         });
@@ -138,11 +146,11 @@ namespace PresentationLayer.ViewModels
             Recursion(type);
             void Recursion(MessageType type)
             {
-                List<MessageType> children = MessageTypes.Where(m => m.ParentID == type.ID).ToList();
+                List<MessageType> children = MessageTypes.SourceCollection.Cast<MessageType>().ToList().Where(m => m.ParentID == type.ID).ToList();
 
                 if (children?.Count > 0)
                 {
-                    foreach (MessageType child in MessageTypes.Where(m => m.ParentID == type.ID))
+                    foreach (MessageType child in MessageTypes.SourceCollection.Cast<MessageType>().ToList().Where(m => m.ParentID == type.ID))
                     {
                         messageTypeIDs.Add(child.ID);
                         Recursion(child);
@@ -200,8 +208,8 @@ namespace PresentationLayer.ViewModels
             set { messages = value; OnPropertyChanged(nameof(Messages)); }
         }
 
-        private ObservableCollection<MessageType> messageTypes;
-        public ObservableCollection<MessageType> MessageTypes
+        private ICollectionView messageTypes;
+        public ICollectionView MessageTypes
         {
             get { return messageTypes; }
             set { messageTypes = value; OnPropertyChanged(nameof(MessageTypes)); }
