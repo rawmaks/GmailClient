@@ -8,6 +8,7 @@ namespace DataAccessLayer.Entities
     {
         public int MessageID { get; set; }
         public Message Message { get; set; }
+        public string FirstName { get; set; }
         // TODO: ...
     }
 }

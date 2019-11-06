@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DataTransferObjects;
 using BusinessLogicLayer.Interfaces;
+using PresentationLayer.Infrastructure.Enums;
 using PresentationLayer.Model;
 using PresentationLayer.Model.Entities;
 using System;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Data;
+using Enums = PresentationLayer.Infrastructure.Enums;
 
 namespace PresentationLayer.ViewModels
 {
@@ -82,8 +84,8 @@ namespace PresentationLayer.ViewModels
         public async Task GetMessageTypesList()
         {
             List<MessageType> messageTypes = _mappers.GetMessageTypeDTOToMessageTypeMapper().Map<IEnumerable<MessageTypeDTO>, List<MessageType>>(await _mailService.GetMessageTypesAsync());
-            messageTypes.FirstOrDefault(m => m.ID == 3).Text = "Все входящие";
-            MessageTypes = new ObservableCollection<MessageType>(messageTypes.Where(m => m.ID > 2));
+            messageTypes.FirstOrDefault(m => m.ID == (int)Enums.MessageTypes.Inbox).Text = "Все входящие";
+            MessageTypes = new ObservableCollection<MessageType>(messageTypes.Where(m => m.ID > (int)Enums.MessageTypes.None && m.ID != (int)Enums.MessageTypes.InboxNone));
         }
 
         public async Task GetUser()
@@ -111,7 +113,7 @@ namespace PresentationLayer.ViewModels
         {
             int id = (int)obj;
             Message message = Messages.SourceCollection.Cast<Message>().FirstOrDefault(x => x.ID == id);
-            if (message != null && message?.StatusID != 2)
+            if (message != null && message?.StatusID != (int)MessageStatuses.OtherMail && message?.StatusID != (int)MessageStatuses.Success)
             {
                 message.StatusID = new Random().Next(2, 6);
             }
@@ -126,6 +128,7 @@ namespace PresentationLayer.ViewModels
             if (IsSortByAsc) { sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Descending)); IsSortByAsc = false; }
             else { sortView.SortDescriptions.Add(new SortDescription(type ?? "Date", ListSortDirection.Ascending)); IsSortByAsc = true; }
             Messages = sortView;
+            Title = default;
         }
 
         // TODO: Это конечно нужно будет переделать
@@ -147,7 +150,7 @@ namespace PresentationLayer.ViewModels
                 }
                 else if (!messageTypeIDs.Any(m => m == type.ID)) messageTypeIDs.Add(type.ID);
             }
-
+            
             ICollectionView filterView = CollectionViewSource.GetDefaultView(Messages.SourceCollection.Cast<Message>());
             filterView.Filter = item =>
             {
@@ -155,6 +158,7 @@ namespace PresentationLayer.ViewModels
                 return message != null && messageTypeIDs.Any(m => m == message?.MessageTypeID);
             };
             Messages = filterView;
+            Title = default;
         }
 
 

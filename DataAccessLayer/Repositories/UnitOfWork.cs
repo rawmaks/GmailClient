@@ -17,6 +17,7 @@ namespace DataAccessLayer.Repositories
         protected IRepository<Settings> _settingsRepository;
         protected IMessageRepository<Message> _messageRepository;
         protected IMessageRepository<MessageType> _messageTypeRepository;
+        protected IMessageRepository<ParticipantMessage> _participantMessageRepository;
 
         public UnitOfWork(string connectionString)
         {
@@ -56,6 +57,16 @@ namespace DataAccessLayer.Repositories
                 if (_messageTypeRepository == null)
                     _messageTypeRepository = new MessageRepository<MessageType>(_options);
                 return _messageTypeRepository;
+            }
+        }
+
+        public IMessageRepository<ParticipantMessage> ParticipantMessages
+        {
+            get
+            {
+                if (_participantMessageRepository == null)
+                    _participantMessageRepository = new MessageRepository<ParticipantMessage>(_options);
+                return _participantMessageRepository;
             }
         }
 

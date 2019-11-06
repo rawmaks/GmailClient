@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Enums = DataAccessLayer.Infrastructure.Enums;
 
 namespace DataAccessLayer.DBContext
 {
@@ -23,22 +24,26 @@ namespace DataAccessLayer.DBContext
         {
             modelBuilder.Entity<MessageType>().HasData(new List<MessageType>
             {
-                new MessageType { ID = 1, CreateDate = DateTime.Now, ParentID = default, Name = "All", Text = "Все" },
-                new MessageType { ID = 2, CreateDate = DateTime.Now, ParentID = 1, Name = "None", Text = "Неопределенные" },
-                new MessageType { ID = 3, CreateDate = DateTime.Now, ParentID = 1, Name = "None", Text = "Входящие" },
-                new MessageType { ID = 4, CreateDate = DateTime.Now, ParentID = 3, Name = "Participant", Text = "От всех участников" },
-                new MessageType { ID = 5, CreateDate = DateTime.Now, ParentID = 4, Name = "Speaker", Text = "От выступающих" },
-                new MessageType { ID = 6, CreateDate = DateTime.Now, ParentID = 4, Name = "Listener", Text = "От слушателей" }
+                new MessageType { ID = (int)Enums.MessageTypes.All, CreateDate = DateTime.Now, ParentID = default, Name = "All", Text = "Все" },
+
+                new MessageType { ID = (int)Enums.MessageTypes.None, CreateDate = DateTime.Now, ParentID = (int)Enums.MessageTypes.All, Name = "None", Text = "Неопределенные" },
+                new MessageType { ID = (int)Enums.MessageTypes.Inbox, CreateDate = DateTime.Now, ParentID = (int)Enums.MessageTypes.All, Name = "Inbox", Text = "Входящие" },
+
+                new MessageType { ID = (int)Enums.MessageTypes.InboxNone, CreateDate = DateTime.Now, ParentID = (int)Enums.MessageTypes.Inbox, Name = "InboxNone", Text = "Неопределенные входящие" },
+                new MessageType { ID = (int)Enums.MessageTypes.InboxParticipant, CreateDate = DateTime.Now, ParentID = (int)Enums.MessageTypes.Inbox, Name = "InboxParticipant", Text = "От всех участников" },
+                new MessageType { ID = (int)Enums.MessageTypes.InboxSpeaker, CreateDate = DateTime.Now, ParentID = (int)Enums.MessageTypes.InboxParticipant, Name = "InboxSpeaker", Text = "От выступающих" },
+                new MessageType { ID = (int)Enums.MessageTypes.InboxListener, CreateDate = DateTime.Now, ParentID = (int)Enums.MessageTypes.InboxParticipant, Name = "InboxListener", Text = "От слушателей" }
                 /// ...
             });
 
             modelBuilder.Entity<MessageStatus>().HasData(new List<MessageStatus>
             {
-                new MessageStatus { ID = 1, CreateDate = DateTime.Now, Name = "New", Text = "Отправить ответ" },
-                new MessageStatus { ID = 2, CreateDate = DateTime.Now, Name = "Success", Text = "Ответ отправлен" },
-                new MessageStatus { ID = 3, CreateDate = DateTime.Now, Name = "Error", Text = "Ошибка. Повторить отправку" },
-                new MessageStatus { ID = 4, CreateDate = DateTime.Now, Name = "Process", Text = "Ответ отправляется" },
-                new MessageStatus { ID = 5, CreateDate = DateTime.Now, Name = "JustMail", Text = "Это письмо не подходит для отправки ответа" }
+                new MessageStatus { ID = (int)Enums.MessageStatuses.None, CreateDate = DateTime.Now, Name = "None", Text = "Не определен" },
+                new MessageStatus { ID = (int)Enums.MessageStatuses.OtherMail, CreateDate = DateTime.Now, Name = "OtherMail", Text = "Не требует ответа" },
+                new MessageStatus { ID = (int)Enums.MessageStatuses.New, CreateDate = DateTime.Now, Name = "New", Text = "Отправить ответ" },
+                new MessageStatus { ID = (int)Enums.MessageStatuses.Success, CreateDate = DateTime.Now, Name = "Success", Text = "Ответ отправлен" },
+                new MessageStatus { ID = (int)Enums.MessageStatuses.Error, CreateDate = DateTime.Now, Name = "Error", Text = "Ошибка. Повторить отправку" },
+                new MessageStatus { ID = (int)Enums.MessageStatuses.Process, CreateDate = DateTime.Now, Name = "Process", Text = "Ответ отправляется" }
             });
 
             base.OnModelCreating(modelBuilder);

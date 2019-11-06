@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.DataTransferObjects;
+using BusinessLogicLayer.Infrastructure.Enums;
 using Google.Apis.Gmail.v1.Data;
 using System;
 using System.Collections.Generic;
@@ -62,17 +63,12 @@ namespace BusinessLogicLayer.Helpers
                         }
                     }
                 }
-                else
-                {
-                    result.Body = _base64Helper.Decode(message?.Payload?.Body?.Data);
-                }
+                else result.Body = _base64Helper.Decode(message?.Payload?.Body?.Data);
 
                 /// OTHER FIELDS
                 result.MessageID = message.Id;
-                result.StatusID = 1;
-                result.MessageTypeID = GetMessageType(result.Body);
-
-                // TODO: New Participant, Потом присвоить или ему мессИД или его мессу полю партисипант
+                result.MessageTypeID = (int)GetMessageType(result.Body);
+                result.StatusID = (int)GetStatus(result.MessageTypeID);
 
                 return result;
             }
@@ -84,19 +80,35 @@ namespace BusinessLogicLayer.Helpers
 
         }
 
-        // TODO: Enum
-        public int GetMessageType(string body)
+        public MessageTypes GetMessageType(string body)
         {
-            if (body == null) return 2;
+            if (body == null) return MessageTypes.None;
 
             try
             {
-                return 4;
+                if (body.Contains("бро")) return MessageTypes.InboxSpeaker;
+                else return MessageTypes.InboxNone;
             }
             catch
             {
                 // TODO: ILoggerFactory
-                return 2;
+                return MessageTypes.None;
+            }
+        }
+
+        public MessageStatuses GetStatus(int messageType)
+        {
+            if (messageType == 0 || messageType == (int)MessageTypes.None) return MessageStatuses.None;
+
+            try
+            {
+                if (messageType == (int)MessageTypes.InboxSpeaker) return MessageStatuses.New;
+                else return MessageStatuses.OtherMail;
+            }
+            catch
+            {
+                // TODO: ILoggerFactory
+                return MessageStatuses.None;
             }
         }
 

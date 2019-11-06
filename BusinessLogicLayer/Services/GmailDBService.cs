@@ -3,6 +3,7 @@ using DALEntities = DataAccessLayer.Entities;
 
 using BusinessLogicLayer.DataTransferObjects;
 using BusinessLogicLayer.Helpers;
+using BusinessLogicLayer.Parsers;
 using BusinessLogicLayer.Interfaces;
 
 using Google.Apis.Gmail.v1;
@@ -22,35 +23,47 @@ namespace BusinessLogicLayer.Services
 
         private readonly GmailAPIService _apiService;
         private readonly MessageHelper _messageHelper;
+        private readonly MessageParser _messageParser;
 
         public GmailDBService(IUnitOfWork uow)
         {
             _database = uow;
             _apiService = GmailAPIService.Instance;
             _messageHelper = MessageHelper.Instance;
+            _messageParser = MessageParser.Instance;
         }
 
 
         // TODO: Return result
         public async Task InitializeAsync()
         {
-            // Получение списка ВХОДЯЩИХ сообщений из Gmail API
+            /// Получение списка ВХОДЯЩИХ сообщений из Gmail API
             List<GmailData.Message> inboxMessages = await _apiService.GetMessagesAsync(new string[] { "INBOX" });
 
             if (inboxMessages?.Count > 0)
             {
                 foreach (GmailData.Message message in inboxMessages)
                 {
+                    /// Если сообщения нет в базе
                     if (!(await _database.Messages.AnyAsync(m => m.MessageID == message.Id)))
                     {
-                        // TODO: !!!
-                        MessageHelper messageHelper = new MessageHelper();
-
-                        MessageDTO messageDTO = messageHelper.ConvertToCorrectType(await _apiService.GetMessageByIDAsync(message.Id));
+                        /// Конвертируем сообщение из АПИ в подходящий тип
+                        MessageDTO messageDTO = _messageHelper.ConvertToCorrectType(await _apiService.GetMessageByIDAsync(message.Id));
 
                         if (messageDTO != null)
                         {
+                            /// Сохраняем в базу
                             await _database.Messages.CreateAsync(GetMessageDTOToMessageMapper().Map<MessageDTO, DALEntities.Message>(messageDTO));
+
+                            /// Парсим тело сообщения в подходящий тип
+                            ParticipantMessageDTO participantMessageDTO = _messageParser.ParseToParticipant(messageDTO.Body);
+                            if (participantMessageDTO != null)
+                            {
+                                /// Получаем идентификатор сохраненного ранее сообщения
+                                participantMessageDTO.MessageID = (await _database.Messages.FindAsync(m => m.MessageID == messageDTO.MessageID)).ID;
+                                /// Сохраняем распарсенное тело в базу
+                                await _database.ParticipantMessages.CreateAsync(GetParticipantMessageDTOToParticipantMessageMapper().Map<ParticipantMessageDTO, DALEntities.ParticipantMessage>(participantMessageDTO));
+                            }
                         }
                     }
                 }
@@ -60,12 +73,12 @@ namespace BusinessLogicLayer.Services
 
         public async Task CheckResponsesAsync()
         {
-            // TODO: Проверка наличия ответов на новые письма (может быть у входящего письма есть поле, обозначающее, что был отправлен ответ)
+            // TODO: Проверка наличия ответов на новые письма (может быть у входящего письма из апи есть поле, обозначающее, что был отправлен ответ)
         }
 
         public async Task SendResponsesAsync()
         {
-            // TODO: Отправка ответов новым письмам (+ при первой инициализации отправка ответов либо с 1 ноября, либо с запуска приложения, скорее второе)
+            // TODO: Отправка ответов новым письмам (+ при первом запуске приложения сохранить в настройки дату запуска и с нее отправлять ответы)  //(+ при первой инициализации отправка ответов либо с 1 ноября, либо с запуска приложения, скорее второе)
         }
 
         public async Task<UserDTO> GetCurrentUserAsync()
@@ -108,6 +121,13 @@ namespace BusinessLogicLayer.Services
             }).CreateMapper();
         }
 
-        
+        private IMapper GetParticipantMessageDTOToParticipantMessageMapper()
+        {
+            return new MapperConfiguration(cfg => {
+                cfg.CreateMap<ParticipantMessageDTO, DALEntities.ParticipantMessage>();
+            }).CreateMapper();
+        }
+
+
     }
 }

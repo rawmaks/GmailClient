@@ -260,28 +260,32 @@
                                     <Path MinWidth="{TemplateBinding MinWidth}">
                                         <Path.Style>
                                             <Style TargetType="Path">
-                                                <Setter Property="Data" Value="{DynamicResource MailSendIconGeometry}"/>
-                                                <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
+                                                <Setter Property="Data" Value="{DynamicResource MailIconGeometry}"/>
+                                                <Setter Property="Fill" Value="{DynamicResource DarkIconColor}"/>
                                                 <Style.Triggers>
                                                     <Trigger Property="MinWidth" Value="1">
-                                                        <Setter Property="Data" Value="{DynamicResource MailSendIconGeometry}"/>
-                                                        <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
+                                                        <Setter Property="Data" Value="{DynamicResource MailMinusIconGeometry}"/>
+                                                        <Setter Property="Fill" Value="{DynamicResource DarkIconColor}"/>
                                                     </Trigger>
                                                     <Trigger Property="MinWidth" Value="2">
-                                                        <Setter Property="Data" Value="{DynamicResource MailCheckIconGeometry}"/>
+                                                        <Setter Property="Data" Value="{DynamicResource MailIconGeometry}"/>
                                                         <Setter Property="Fill" Value="{DynamicResource DarkIconColor}"/>
                                                     </Trigger>
                                                     <Trigger Property="MinWidth" Value="3">
-                                                        <Setter Property="Data" Value="{DynamicResource MailAlertIconGeometry}"/>
-                                                        <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
-                                                    </Trigger>
-                                                    <Trigger Property="MinWidth" Value="4">
                                                         <Setter Property="Data" Value="{DynamicResource MailSendIconGeometry}"/>
                                                         <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
                                                     </Trigger>
-                                                    <Trigger Property="MinWidth" Value="5">
-                                                        <Setter Property="Data" Value="{DynamicResource MailIconGeometry}"/>
+                                                    <Trigger Property="MinWidth" Value="4">
+                                                        <Setter Property="Data" Value="{DynamicResource MailCheckIconGeometry}"/>
                                                         <Setter Property="Fill" Value="{DynamicResource DarkIconColor}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="MinWidth" Value="5">
+                                                        <Setter Property="Data" Value="{DynamicResource MailAlertIconGeometry}"/>
+                                                        <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="MinWidth" Value="6">
+                                                        <Setter Property="Data" Value="{DynamicResource MailSendIconGeometry}"/>
+                                                        <Setter Property="Fill" Value="{DynamicResource LightIconColor}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -294,13 +298,17 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
+                        <Trigger Property="MinWidth" Value="1">
+                            <Setter TargetName="Ellipse" Property="Fill" Value="{DynamicResource LightGrayColor}"/>
+                            <Setter Property="ToolTip" Value="Ответ не требуется"/>
+                        </Trigger>
                         <Trigger Property="MinWidth" Value="2">
                             <Setter TargetName="Ellipse" Property="Fill" Value="{DynamicResource LightGrayColor}"/>
-                            <Setter Property="ToolTip" Value="Ответ отправлен"/>
+                            <Setter Property="ToolTip" Value="Ответ не требуется"/>
                         </Trigger>
-                        <Trigger Property="MinWidth" Value="5">
+                        <Trigger Property="MinWidth" Value="4">
                             <Setter TargetName="Ellipse" Property="Fill" Value="{DynamicResource LightGrayColor}"/>
-                            <Setter Property="ToolTip" Value="Ответ не нужен"/>
+                            <Setter Property="ToolTip" Value="Ответ отправлен"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                     

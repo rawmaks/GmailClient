@@ -8,6 +8,7 @@ namespace BusinessLogicLayer.DataTransferObjects
     {
         public int MessageID { get; set; }
         public MessageDTO Message { get; set; }
+        public string FirstName { get; set; }
         // TODO: ...
     }
 }

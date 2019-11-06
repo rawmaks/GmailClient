@@ -14,9 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Enums\" />
     <Folder Include="Infrastructure\Exceptions\" />
-    <Folder Include="Parsers\" />
   </ItemGroup>
 
 </Project>

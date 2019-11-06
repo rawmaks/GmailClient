@@ -11,6 +11,7 @@ namespace DataAccessLayer.Interfaces
         IRepository<Settings> Settings { get; }
         IMessageRepository<Message> Messages { get; }
         IMessageRepository<MessageType> MessageTypes { get; }
+        IMessageRepository<ParticipantMessage> ParticipantMessages { get; }
         //Task SaveAsync();
     }
 }
